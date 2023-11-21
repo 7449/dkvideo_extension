@@ -1,8 +1,6 @@
 # dkvideo_extension
 
-(DKVideoPlayer)[https://github.com/Doikki/DKVideoPlayer]
-
-## 画中画模式扩展
+## [DKVideoPlayer](https://github.com/Doikki/DKVideoPlayer) 画中画模式扩展
 
 * 以更方便的Api展示视频画中画模式
 * 测试
