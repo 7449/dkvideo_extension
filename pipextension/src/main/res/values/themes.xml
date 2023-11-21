@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ThemeSampleFloatWindowAnimation">
+        <item name="android:windowEnterAnimation">@anim/video_anim_float_window_enter</item>
+        <item name="android:windowExitAnimation">@anim/video_anim_float_window_exit</item>
+    </style>
+
+</resources>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="@android:color/black">
+
+    <ImageView
+        android:id="@+id/start"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/video_shape_play_start_bg"
+        android:importantForAccessibility="no"
+        android:padding="10dp"
+        android:src="@drawable/video_selector_play_start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:indeterminateDrawable="@drawable/video_shape_play_progress"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_margin="5dp"
+        android:importantForAccessibility="no"
+        android:padding="5dp"
+        android:src="@drawable/video_icon_play_close"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/restore"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_margin="5dp"
+        android:importantForAccessibility="no"
+        android:padding="5dp"
+        android:src="@drawable/video_icon_play_full"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/prev"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="5dp"
+        android:importantForAccessibility="no"
+        android:padding="5dp"
+        android:src="@drawable/video_icon_play_prev"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/next"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="5dp"
+        android:importantForAccessibility="no"
+        android:padding="5dp"
+        android:src="@drawable/video_icon_play_next"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/rotation"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="5dp"
+        android:importantForAccessibility="no"
+        android:padding="5dp"
+        android:src="@drawable/video_icon_play_rotation"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/scale"
+        app:layout_constraintStart_toEndOf="@id/restore"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/scale"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="5dp"
+        android:importantForAccessibility="no"
+        android:padding="5dp"
+        android:src="@drawable/video_icon_play_scale"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/close"
+        app:layout_constraintStart_toEndOf="@id/rotation"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

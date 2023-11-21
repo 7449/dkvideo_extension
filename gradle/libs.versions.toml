@@ -1,0 +1,28 @@
+[versions]
+
+compildSdk = "34"
+targetSdk = "34"
+versionCode = "1"
+versionName = "1.0.0"
+minSdk = "23"
+jvmTarget = "17"
+
+android = "8.1.4"
+kotlin = "1.9.20"
+
+[plugins]
+
+android-application = { id = "com.android.application", version.ref = "android" }
+android-library = { id = "com.android.library", version.ref = "android" }
+android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+[libraries]
+
+appcompat = "androidx.appcompat:appcompat:1.6.1"
+material = "com.google.android.material:material:1.10.0"
+core = "androidx.core:core-ktx:1.12.0"
+
+player-java = "xyz.doikki.android.dkplayer:dkplayer-java:3.3.7"
+player-ui = "xyz.doikki.android.dkplayer:dkplayer-ui:3.3.7"
+player-core = "xyz.doikki.android.dkplayer:player-exo:3.3.7"
+player-cache = "xyz.doikki.android.dkplayer:videocache:3.3.7"
