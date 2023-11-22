@@ -1,7 +1,5 @@
 package xyz.doikki.videoplayer.pipextension.listener
 
-interface OnVideoSizeChangedListener {
-
+internal interface OnVideoSizeChangedListener {
     fun onVideoSizeChanged(videoSize: IntArray)
-
 }

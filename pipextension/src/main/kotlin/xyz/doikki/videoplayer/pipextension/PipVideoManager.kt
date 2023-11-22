@@ -4,8 +4,8 @@ import android.view.ViewGroup
 import xyz.doikki.videoplayer.exo.ExoMediaPlayerFactory
 import xyz.doikki.videoplayer.pipextension.listener.OnPipCompleteListener
 import xyz.doikki.videoplayer.pipextension.listener.OnPipErrorListener
+import xyz.doikki.videoplayer.pipextension.listener.OnPipListener
 import xyz.doikki.videoplayer.pipextension.listener.OnPipOperateListener
-import xyz.doikki.videoplayer.pipextension.listener.OnSingleVideoListener
 import xyz.doikki.videoplayer.pipextension.listener.OnViewOrientationListener
 import xyz.doikki.videoplayer.pipextension.types.VideoSizeChangedType
 import xyz.doikki.videoplayer.pipextension.view.AppCompatVideoView
@@ -18,13 +18,13 @@ import xyz.doikki.videoplayer.player.VideoViewConfig
 import xyz.doikki.videoplayer.player.VideoViewManager
 import xyz.doikki.videoplayer.util.PlayerUtils
 
-class SingleVideoManager : OnPipOperateListener,
+class PipVideoManager : OnPipOperateListener,
     OnPipErrorListener,
     OnPipCompleteListener,
     OnViewOrientationListener {
 
     companion object {
-        val instance = SingleVideoManager()
+        val instance = PipVideoManager()
     }
 
     init {
@@ -41,7 +41,8 @@ class SingleVideoManager : OnPipOperateListener,
     val currentVideoTag: String? get() = tag
 
     private var tag: String? = null
-    private var _videoListener: OnSingleVideoListener? = null
+    private var _videoListener: OnPipListener? = null
+    private var _playlist = true
 
     private val videoListener get() = _videoListener
     private val floatView = VideoPipFloatView(VideoProvider.appContext)
@@ -51,8 +52,12 @@ class SingleVideoManager : OnPipOperateListener,
         .doOnPlayCompleted { onPipOperateClickNext() }
         .doOnPlayError { videoListener?.onVideoPlayError() }
 
-    fun registerListener(listener: OnSingleVideoListener) {
+    fun registerListener(listener: OnPipListener) {
         _videoListener = listener
+    }
+
+    fun isPlayList(playlist: Boolean) = apply {
+        this._playlist = playlist
     }
 
     fun preLoadVideo(root: ViewGroup?, forceViewGroup: Boolean, tag: String, name: String) {
@@ -134,6 +139,10 @@ class SingleVideoManager : OnPipOperateListener,
         return videoView.onBackPressed()
     }
 
+    override fun onPipOperatePlayList(): Boolean {
+        return _playlist
+    }
+
     /******************* listener method start *************************/
     override fun onPipOperateClickClose() {
         shutDown()
@@ -159,6 +168,10 @@ class SingleVideoManager : OnPipOperateListener,
         videoView.refreshScreenScaleType()
     }
 
+    override fun onPipErrorPlayList(): Boolean {
+        return _playlist
+    }
+
     override fun onPipErrorClickClose() {
         onPipOperateClickClose()
     }
@@ -173,6 +186,10 @@ class SingleVideoManager : OnPipOperateListener,
 
     override fun onPipErrorClickPrev() {
         onPipOperateClickPrev()
+    }
+
+    override fun onPipCompletePlayList(): Boolean {
+        return _playlist
     }
 
     override fun onPipCompleteClickClose() {

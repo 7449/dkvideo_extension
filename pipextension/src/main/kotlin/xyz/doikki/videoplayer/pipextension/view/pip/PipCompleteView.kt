@@ -14,7 +14,7 @@ import xyz.doikki.videoplayer.pipextension.view.gone
 import xyz.doikki.videoplayer.pipextension.view.visible
 import xyz.doikki.videoplayer.player.VideoView
 
-internal class VideoPipCompleteView @JvmOverloads constructor(
+internal class PipCompleteView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr), IControlComponent {
 
@@ -50,6 +50,15 @@ internal class VideoPipCompleteView @JvmOverloads constructor(
             visible()
         } else {
             gone()
+        }
+    }
+
+    override fun setVisibility(visibility: Int) {
+        super.setVisibility(visibility)
+        val isPlayList = listener?.onPipCompletePlayList() ?: return
+        if (!isPlayList) {
+            viewBinding.next.gone()
+            viewBinding.prev.gone()
         }
     }
 

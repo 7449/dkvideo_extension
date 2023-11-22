@@ -9,22 +9,22 @@ import android.widget.FrameLayout
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import xyz.doikki.videoplayer.pipextension.SingleVideoManager
-import xyz.doikki.videoplayer.pipextension.listener.OnSingleVideoListener
+import xyz.doikki.videoplayer.pipextension.PipVideoManager
+import xyz.doikki.videoplayer.pipextension.listener.OnPipListener
 
-class SampleActivity : AppCompatActivity(R.layout.sample_activity), OnSingleVideoListener {
+class SampleActivity : AppCompatActivity(R.layout.sample_activity), OnPipListener {
 
     companion object {
         private const val URL = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
     }
 
-    private val singleVideo = SingleVideoManager.instance
+    private val videoManager = PipVideoManager.instance.isPlayList(false)
     private val videoView by lazy { findViewById<FrameLayout>(R.id.video) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         onBackPressedDispatcher.addCallback(this, true) {
-            if (!singleVideo.onBackPressed()) {
+            if (!videoManager.onBackPressed()) {
                 finish()
             }
         }
@@ -36,17 +36,17 @@ class SampleActivity : AppCompatActivity(R.layout.sample_activity), OnSingleVide
 
     override fun onPause() {
         super.onPause()
-        singleVideo.onPause()
+        videoManager.onPause()
     }
 
     override fun onResume() {
         super.onResume()
-        singleVideo.onResume()
+        videoManager.onResume()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        singleVideo.onDestroy()
+        videoManager.onDestroy()
     }
 
     override fun onPipRestore() {
@@ -63,20 +63,20 @@ class SampleActivity : AppCompatActivity(R.layout.sample_activity), OnSingleVide
     }
 
     private fun onPlayerClickItem(url: String, isTouch: Boolean = false) {
-        val rootView = if (!singleVideo.isPipFloatView || isTouch) {
+        val rootView = if (!videoManager.isPipFloatView || isTouch) {
             videoView
         } else null
-        singleVideo.registerListener(this)
-        singleVideo.showProgressView()
-        singleVideo.preLoadVideo(rootView, isTouch, url, url)
-        singleVideo.showVideoView()
-        singleVideo.startVideo(url)
+        videoManager.registerListener(this)
+        videoManager.showProgressView()
+        videoManager.preLoadVideo(rootView, isTouch, url, url)
+        videoManager.showVideoView()
+        videoManager.startVideo(url)
     }
 
     private fun onChangeUI(): Boolean {
-        if (!singleVideo.isPipFloatView) return false
-        singleVideo.registerListener(this)
-        singleVideo.addView(videoView, "")
+        if (!videoManager.isPipFloatView) return false
+        videoManager.registerListener(this)
+        videoManager.addView(videoView, "")
         return true
     }
 
@@ -86,7 +86,7 @@ class SampleActivity : AppCompatActivity(R.layout.sample_activity), OnSingleVide
                 Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
             )
         } else {
-            singleVideo.addWindow()
+            videoManager.addWindow()
             finish()
         }
     }

@@ -1,6 +1,7 @@
 package xyz.doikki.videoplayer.pipextension.listener
 
-interface OnPipCompleteListener {
+internal interface OnPipCompleteListener {
+    fun onPipCompletePlayList(): Boolean
     fun onPipCompleteClickClose()
     fun onPipCompleteClickRestore()
     fun onPipCompleteClickNext()

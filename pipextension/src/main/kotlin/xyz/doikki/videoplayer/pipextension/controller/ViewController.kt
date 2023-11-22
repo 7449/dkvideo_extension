@@ -15,7 +15,7 @@ import xyz.doikki.videoplayer.pipextension.view.view.VideoOrientationView
 import xyz.doikki.videoplayer.pipextension.view.visible
 import xyz.doikki.videoplayer.player.VideoView
 
-internal class VideoViewController @JvmOverloads constructor(
+internal class ViewController @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : StandardVideoController(context, attrs, defStyleAttr) {
 

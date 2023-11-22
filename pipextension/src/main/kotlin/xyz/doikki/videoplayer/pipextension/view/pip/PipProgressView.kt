@@ -15,7 +15,7 @@ import xyz.doikki.videoplayer.pipextension.view.visible
 import xyz.doikki.videoplayer.player.VideoView
 import xyz.doikki.videoplayer.util.PlayerUtils
 
-internal class VideoPipProgressView @JvmOverloads constructor(
+internal class PipProgressView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr), IControlComponent {
 

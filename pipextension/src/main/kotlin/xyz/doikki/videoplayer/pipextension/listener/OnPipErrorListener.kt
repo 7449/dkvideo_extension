@@ -1,6 +1,7 @@
 package xyz.doikki.videoplayer.pipextension.listener
 
-interface OnPipErrorListener {
+internal interface OnPipErrorListener {
+    fun onPipErrorPlayList(): Boolean
     fun onPipErrorClickClose()
     fun onPipErrorClickRestore()
     fun onPipErrorClickNext()

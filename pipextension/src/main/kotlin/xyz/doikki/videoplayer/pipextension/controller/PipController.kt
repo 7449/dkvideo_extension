@@ -6,12 +6,12 @@ import xyz.doikki.videoplayer.controller.GestureVideoController
 import xyz.doikki.videoplayer.pipextension.listener.OnPipCompleteListener
 import xyz.doikki.videoplayer.pipextension.listener.OnPipErrorListener
 import xyz.doikki.videoplayer.pipextension.listener.OnPipOperateListener
-import xyz.doikki.videoplayer.pipextension.view.pip.VideoPipCompleteView
-import xyz.doikki.videoplayer.pipextension.view.pip.VideoPipErrorView
-import xyz.doikki.videoplayer.pipextension.view.pip.VideoPipOperateView
-import xyz.doikki.videoplayer.pipextension.view.pip.VideoPipProgressView
+import xyz.doikki.videoplayer.pipextension.view.pip.PipCompleteView
+import xyz.doikki.videoplayer.pipextension.view.pip.PipErrorView
+import xyz.doikki.videoplayer.pipextension.view.pip.PipOperateView
+import xyz.doikki.videoplayer.pipextension.view.pip.PipProgressView
 
-internal class VideoPipController @JvmOverloads constructor(
+internal class PipController @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : GestureVideoController(context, attrs, defStyleAttr) {
 
@@ -24,10 +24,10 @@ internal class VideoPipController @JvmOverloads constructor(
         errorListener: OnPipErrorListener,
         completeListener: OnPipCompleteListener,
     ) {
-        addControlComponent(VideoPipProgressView(context))
-        addControlComponent(VideoPipCompleteView(context).registerListener(completeListener))
-        addControlComponent(VideoPipErrorView(context).registerListener(errorListener))
-        addControlComponent(VideoPipOperateView(context).registerListener(operateListener))
+        addControlComponent(PipProgressView(context))
+        addControlComponent(PipCompleteView(context).registerListener(completeListener))
+        addControlComponent(PipErrorView(context).registerListener(errorListener))
+        addControlComponent(PipOperateView(context).registerListener(operateListener))
     }
 
 }

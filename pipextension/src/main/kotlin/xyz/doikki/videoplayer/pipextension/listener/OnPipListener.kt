@@ -1,6 +1,6 @@
 package xyz.doikki.videoplayer.pipextension.listener
 
-interface OnSingleVideoListener {
+interface OnPipListener {
     fun onPipRestore()
     fun onVideoPlayPrev()
     fun onVideoPlayNext()

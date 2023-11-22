@@ -17,12 +17,12 @@ internal class PlayerProgressManager : ProgressManager() {
     }
 
     override fun saveProgress(url: String, progress: Long) {
-        if (SingleVideoManager.instance.currentVideoTag.isNullOrBlank()) return
-        playerSp.edit().putLong(SingleVideoManager.instance.currentVideoTag, progress).apply()
+        if (PipVideoManager.instance.currentVideoTag.isNullOrBlank()) return
+        playerSp.edit().putLong(PipVideoManager.instance.currentVideoTag, progress).apply()
     }
 
     override fun getSavedProgress(url: String): Long {
-        return playerSp.getLong(SingleVideoManager.instance.currentVideoTag, 0)
+        return playerSp.getLong(PipVideoManager.instance.currentVideoTag, 0)
     }
 
 }

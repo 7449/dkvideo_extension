@@ -1,6 +1,6 @@
 package xyz.doikki.videoplayer.pipextension.listener
 
-interface OnViewOrientationListener {
+internal interface OnViewOrientationListener {
     fun onViewOrientationRotationClick()
     fun onViewOrientationScreenScaleClick()
 }

@@ -6,7 +6,7 @@ import xyz.doikki.videoplayer.pipextension.view.view.VideoView
 import xyz.doikki.videoplayer.player.BaseVideoView
 import xyz.doikki.videoplayer.player.BaseVideoView.SimpleOnStateChangeListener
 
-internal class VideoViewActionHelper(
+internal class VideoViewStateHelper(
     appCompatVideoView: AppCompatVideoView,
     videoView: VideoView
 ) {

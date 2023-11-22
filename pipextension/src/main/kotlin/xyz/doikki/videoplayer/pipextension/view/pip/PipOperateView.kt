@@ -14,7 +14,7 @@ import xyz.doikki.videoplayer.pipextension.view.gone
 import xyz.doikki.videoplayer.pipextension.view.visible
 import xyz.doikki.videoplayer.player.VideoView
 
-internal class VideoPipOperateView @JvmOverloads constructor(
+internal class PipOperateView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr), IControlComponent {
 
@@ -63,23 +63,38 @@ internal class VideoPipOperateView @JvmOverloads constructor(
     }
 
     private fun visibleViews() {
+        playListView(true)
         viewBinding.start.visible()
         viewBinding.close.visible()
         viewBinding.restore.visible()
-        viewBinding.next.visible()
-        viewBinding.prev.visible()
         viewBinding.rotation.visible()
 //        viewBinding.scale.visible()
     }
 
     private fun goneViews() {
+        playListView(false)
         viewBinding.start.gone()
         viewBinding.close.gone()
         viewBinding.restore.gone()
-        viewBinding.next.gone()
-        viewBinding.prev.gone()
         viewBinding.rotation.gone()
 //        viewBinding.scale.gone()
+    }
+
+    private fun playListView(isVisible: Boolean) {
+        listener?.let {
+            if (!it.onPipOperatePlayList()) {
+                viewBinding.next.gone()
+                viewBinding.prev.gone()
+                return
+            }
+        }
+        if (isVisible) {
+            viewBinding.next.visible()
+            viewBinding.prev.visible()
+        } else {
+            viewBinding.next.gone()
+            viewBinding.prev.gone()
+        }
     }
 
     override fun onPlayStateChanged(playState: Int) {

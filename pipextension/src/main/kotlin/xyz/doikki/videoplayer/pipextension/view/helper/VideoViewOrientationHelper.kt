@@ -4,7 +4,7 @@ import android.util.Log
 import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
 import xyz.doikki.videoplayer.controller.OrientationHelper
-import xyz.doikki.videoplayer.pipextension.SingleVideoManager
+import xyz.doikki.videoplayer.pipextension.PipVideoManager
 import xyz.doikki.videoplayer.pipextension.dp2pxInt
 import xyz.doikki.videoplayer.pipextension.isLandscape
 import xyz.doikki.videoplayer.pipextension.types.VideoScreenOrientation
@@ -87,7 +87,7 @@ internal class VideoViewOrientationHelper(
 
         Log.e(
             "Print",
-            "RefreshVideoSize: \n来源:$type ${SingleVideoManager.instance.currentVideoTag} "
+            "RefreshVideoSize: \n来源:$type ${PipVideoManager.instance.currentVideoTag} "
                     + "\n视频原尺寸:${videoView.videoSize.contentToString()}"
                     + "\n视频新尺寸:${newVideoSize.contentToString()}"
         )

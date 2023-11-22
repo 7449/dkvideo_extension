@@ -11,7 +11,7 @@ import xyz.doikki.videoplayer.pipextension.listener.OnPipErrorListener
 import xyz.doikki.videoplayer.pipextension.listener.OnPipOperateListener
 import xyz.doikki.videoplayer.pipextension.listener.OnViewOrientationListener
 import xyz.doikki.videoplayer.pipextension.types.VideoSizeChangedType
-import xyz.doikki.videoplayer.pipextension.view.helper.VideoViewActionHelper
+import xyz.doikki.videoplayer.pipextension.view.helper.VideoViewStateHelper
 import xyz.doikki.videoplayer.pipextension.view.helper.VideoViewApiHelper
 import xyz.doikki.videoplayer.pipextension.view.helper.VideoViewOrientationHelper
 import xyz.doikki.videoplayer.pipextension.view.helper.VideoViewUiHelper
@@ -24,7 +24,7 @@ internal class AppCompatVideoView @JvmOverloads constructor(
         VideoLayoutPlayContainerBinding.inflate(LayoutInflater.from(context), this, true)
 
     private val uiHelper = VideoViewUiHelper(this, viewBinding.root, viewBinding.videoView)
-    private val actionHelper = VideoViewActionHelper(this, viewBinding.videoView)
+    private val actionHelper = VideoViewStateHelper(this, viewBinding.videoView)
     private val apiHelper = VideoViewApiHelper(viewBinding.progress, viewBinding.videoView)
     private val orientationHelper = VideoViewOrientationHelper(this, viewBinding.videoView)
 
