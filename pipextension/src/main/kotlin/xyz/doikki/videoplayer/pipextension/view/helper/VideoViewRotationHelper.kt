@@ -5,7 +5,7 @@ import xyz.doikki.videoplayer.pipextension.view.view.VideoView
 
 internal class VideoViewRotationHelper(private val videoView: VideoView) {
 
-    private val videoRotationArray = VideoRotation.values()
+    private val videoRotationArray = VideoRotation.entries
     private var videoRotation = VideoRotation.R_360
     private var videoRotationIndex = 0
 

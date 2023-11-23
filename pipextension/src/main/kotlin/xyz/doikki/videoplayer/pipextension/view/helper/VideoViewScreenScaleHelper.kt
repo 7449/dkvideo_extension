@@ -5,7 +5,7 @@ import xyz.doikki.videoplayer.pipextension.view.view.VideoView
 
 internal class VideoViewScreenScaleHelper(private val videoView: VideoView) {
 
-    private val screenScaleTypes = VideoScreenScaleType.values()
+    private val screenScaleTypes = VideoScreenScaleType.entries
     private var screenScaleType = VideoScreenScaleType.SCREEN_SCALE_DEFAULT
     private var screenScaleIndex = 1
 
