@@ -45,8 +45,8 @@ class PipVideoManager : OnPipOperateListener,
     private var _playlist = true
 
     private val videoListener get() = _videoListener
-    private val floatView = VideoPipFloatView(VideoProvider.appContext)
-    private val videoView = AppCompatVideoView(VideoProvider.appContext)
+    private val floatView = VideoPipFloatView(PipVideoInitializer.appContext)
+    private val videoView = AppCompatVideoView(PipVideoInitializer.appContext)
         .doOnPlayBuffered { it.refreshVideoSize(VideoSizeChangedType.BUFFERED) }
         .doOnVideoSize { view, _ -> view.refreshVideoSize(VideoSizeChangedType.VIDEO_SIZE_CALLBACK) }
         .doOnPlayCompleted { onPipOperateClickNext() }

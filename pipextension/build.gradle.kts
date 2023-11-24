@@ -18,6 +18,7 @@ android {
 }
 dependencies {
     implementation(libs.material)
+    implementation(libs.startup)
     implementation(libs.player.java)
     implementation(libs.player.ui)
     implementation(libs.player.cache)

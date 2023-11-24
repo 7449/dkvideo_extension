@@ -10,7 +10,7 @@ internal class PlayerProgressManager : ProgressManager() {
     }
 
     private val playerSp by lazy {
-        VideoProvider.appContext.getSharedPreferences(
+        PipVideoInitializer.appContext.getSharedPreferences(
             PLAYER_SP_NAME,
             Context.MODE_PRIVATE
         )
