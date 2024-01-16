@@ -9,6 +9,7 @@ import android.content.res.Resources
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import android.util.TypedValue
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -71,16 +72,19 @@ class PipVideoManagerLifecycle : DefaultLifecycleObserver {
 
     override fun onPause(owner: LifecycleOwner) {
         super.onPause(owner)
+        Log.e("Print", "Video onPause ${PipVideoManager.instance.isPipMode}")
         PipVideoManager.instance.onPause()
     }
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
+        Log.e("Print", "Video onResume ${PipVideoManager.instance.isPipMode}")
         PipVideoManager.instance.onResume()
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
+        Log.e("Print", "Video onDestroy ${PipVideoManager.instance.isPipMode}")
         PipVideoManager.instance.onDestroy()
     }
 
