@@ -20,7 +20,7 @@ import kotlin.math.abs
 
 @SuppressLint("WrongConstant")
 internal class VideoPipFloatView @JvmOverloads constructor(
-    context: Context, downX: Int = 50, downY: Int = 50
+    context: Context, downX: Int = 50, downY: Int = 50,
 ) : FrameLayout(context) {
 
     private val manager = PlayerUtils.getWindowManager(context.applicationContext)

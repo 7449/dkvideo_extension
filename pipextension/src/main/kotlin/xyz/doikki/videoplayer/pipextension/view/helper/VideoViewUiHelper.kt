@@ -8,7 +8,7 @@ import xyz.doikki.videoplayer.pipextension.dp2px
 import xyz.doikki.videoplayer.pipextension.listener.OnPipCompleteListener
 import xyz.doikki.videoplayer.pipextension.listener.OnPipErrorListener
 import xyz.doikki.videoplayer.pipextension.listener.OnPipOperateListener
-import xyz.doikki.videoplayer.pipextension.listener.OnViewOrientationListener
+import xyz.doikki.videoplayer.pipextension.listener.OnViewOperateListener
 import xyz.doikki.videoplayer.pipextension.view.AppCompatVideoView
 import xyz.doikki.videoplayer.pipextension.view.removeViewFormParent
 import xyz.doikki.videoplayer.pipextension.view.view.VideoView
@@ -16,13 +16,13 @@ import xyz.doikki.videoplayer.pipextension.view.view.VideoView
 internal class VideoViewUiHelper(
     private val appCompatVideoView: AppCompatVideoView,
     private val cardView: CardView,
-    private val videoView: VideoView
+    private val videoView: VideoView,
 ) {
 
     fun pipControllerView(
         operateListener: OnPipOperateListener,
         errorListener: OnPipErrorListener,
-        completeListener: OnPipCompleteListener
+        completeListener: OnPipCompleteListener,
     ) {
         appCompatVideoView.removeViewFormParent()
         cardView.radius = 10f.dp2px()
@@ -35,13 +35,13 @@ internal class VideoViewUiHelper(
 
     fun viewGroupControllerView(
         activity: Activity,
-        name: String,
-        viewRotationListener: OnViewOrientationListener
+        title: String,
+        operateListener: OnViewOperateListener,
     ) {
         appCompatVideoView.removeViewFormParent()
         cardView.radius = 0f
         val controller = ViewController(activity)
-        controller.setDefaultControlComponent(name, viewRotationListener)
+        controller.setDefaultControlComponent(title, operateListener)
         videoView.setVideoController(controller)
         controller.setPlayState(videoView.currentPlayState)
         controller.setPlayerState(videoView.currentPlayerState)

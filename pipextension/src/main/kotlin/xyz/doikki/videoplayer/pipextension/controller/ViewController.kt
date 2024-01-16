@@ -9,22 +9,19 @@ import xyz.doikki.videocontroller.component.GestureView
 import xyz.doikki.videocontroller.component.PrepareView
 import xyz.doikki.videocontroller.component.TitleView
 import xyz.doikki.videocontroller.component.VodControlView
-import xyz.doikki.videoplayer.pipextension.listener.OnViewOrientationListener
+import xyz.doikki.videoplayer.pipextension.listener.OnViewOperateListener
 import xyz.doikki.videoplayer.pipextension.view.gone
-import xyz.doikki.videoplayer.pipextension.view.view.VideoOrientationView
+import xyz.doikki.videoplayer.pipextension.view.view.VideoOperateView
 import xyz.doikki.videoplayer.pipextension.view.visible
 import xyz.doikki.videoplayer.player.VideoView
 
 internal class ViewController @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
 ) : StandardVideoController(context, attrs, defStyleAttr) {
 
-    fun setDefaultControlComponent(
-        title: String,
-        viewRotationListener: OnViewOrientationListener,
-    ) {
+    fun setDefaultControlComponent(title: String, operateListener: OnViewOperateListener) {
         addDefaultControlComponent(title, false)
-        addControlComponent(VideoOrientationView(context).registerListener(viewRotationListener))
+        addControlComponent(VideoOperateView(context).registerListener(operateListener))
         setEnableInNormal(true)
     }
 
@@ -41,7 +38,7 @@ internal class ViewController @JvmOverloads constructor(
     }
 
     private class FixStateVodControlView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
     ) : VodControlView(context, attrs, defStyleAttr) {
         override fun onPlayStateChanged(playState: Int) {
             super.onPlayStateChanged(playState)

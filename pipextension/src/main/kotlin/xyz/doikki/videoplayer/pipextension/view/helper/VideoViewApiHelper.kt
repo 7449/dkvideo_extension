@@ -7,7 +7,7 @@ import xyz.doikki.videoplayer.pipextension.view.visible
 
 internal class VideoViewApiHelper(
     private val progressView: View,
-    private val videoView: VideoView
+    private val videoView: VideoView,
 ) {
 
     fun startVideo(url: String) {

@@ -4,9 +4,9 @@ import android.view.ViewGroup
 import xyz.doikki.videoplayer.exo.ExoMediaPlayerFactory
 import xyz.doikki.videoplayer.pipextension.listener.OnPipCompleteListener
 import xyz.doikki.videoplayer.pipextension.listener.OnPipErrorListener
-import xyz.doikki.videoplayer.pipextension.listener.OnPipListener
+import xyz.doikki.videoplayer.pipextension.listener.OnPipManagerListener
 import xyz.doikki.videoplayer.pipextension.listener.OnPipOperateListener
-import xyz.doikki.videoplayer.pipextension.listener.OnViewOrientationListener
+import xyz.doikki.videoplayer.pipextension.listener.OnViewOperateListener
 import xyz.doikki.videoplayer.pipextension.types.VideoSizeChangedType
 import xyz.doikki.videoplayer.pipextension.view.AppCompatVideoView
 import xyz.doikki.videoplayer.pipextension.view.VideoPipFloatView
@@ -16,12 +16,12 @@ import xyz.doikki.videoplayer.pipextension.view.removeViewFormParent
 import xyz.doikki.videoplayer.pipextension.view.visible
 import xyz.doikki.videoplayer.player.VideoViewConfig
 import xyz.doikki.videoplayer.player.VideoViewManager
-import xyz.doikki.videoplayer.util.PlayerUtils
 
-class PipVideoManager : OnPipOperateListener,
+class PipVideoManager :
+    OnPipOperateListener,
     OnPipErrorListener,
     OnPipCompleteListener,
-    OnViewOrientationListener {
+    OnViewOperateListener {
 
     companion object {
         val instance = PipVideoManager()
@@ -36,70 +36,60 @@ class PipVideoManager : OnPipOperateListener,
         )
     }
 
-    val isPipFloatView: Boolean get() = videoView.isParentView<VideoPipFloatView>()
-    val isVideoPlaying: Boolean get() = videoView.isPlaying()
+    val isPipMode: Boolean get() = videoView.isParentView<VideoPipFloatView>() && floatView.isShow()
+    val isPlaying: Boolean get() = videoView.isPlaying()
     val currentVideoTag: String? get() = tag
 
     private var tag: String? = null
-    private var _videoListener: OnPipListener? = null
-    private var _playlist = true
+    private var pipManagerListener: OnPipManagerListener? = null
+    private var isPlayList = true
 
-    private val videoListener get() = _videoListener
     private val floatView = VideoPipFloatView(PipVideoInitializer.appContext)
     private val videoView = AppCompatVideoView(PipVideoInitializer.appContext)
         .doOnPlayBuffered { it.refreshVideoSize(VideoSizeChangedType.BUFFERED) }
         .doOnVideoSize { view, _ -> view.refreshVideoSize(VideoSizeChangedType.VIDEO_SIZE_CALLBACK) }
         .doOnPlayCompleted { onPipOperateClickNext() }
-        .doOnPlayError { videoListener?.onVideoPlayError() }
+        .doOnPlayError { pipManagerListener?.onPipPlayError() }
 
-    fun registerListener(listener: OnPipListener) {
-        _videoListener = listener
+    fun setPipManagerListener(listener: OnPipManagerListener) {
+        pipManagerListener = listener
     }
 
     fun isPlayList(playlist: Boolean) = apply {
-        this._playlist = playlist
-    }
-
-    fun preLoadVideo(root: ViewGroup?, forceViewGroup: Boolean, tag: String, name: String) {
-        this.tag = tag
-        videoView.release()
-        if (!isPipFloatView || forceViewGroup) {
-            if (root == null) throw NullPointerException("root == null")
-            addView(root, name)
-        } else {
-            addWindow()
-        }
+        this.isPlayList = playlist
     }
 
     fun startVideo(url: String) {
         videoView.startVideo(url)
     }
 
-    fun startVideo(
-        root: ViewGroup?,
-        forceViewGroup: Boolean,
-        tag: String,
-        name: String,
-        url: String
-    ) {
-        preLoadVideo(root, forceViewGroup, tag, name)
+    fun startVideo(container: ViewGroup?, tag: String, title: String, url: String) {
+        attachVideo(container, tag, title)
         startVideo(url)
     }
 
-    fun addWindow() {
-        floatView.addToWindow(
-            videoView.getPipView(this, this, this)
-        )
-        videoView.refreshVideoSize(VideoSizeChangedType.ADD_WINDOW)
+    fun attachVideo(container: ViewGroup?, tag: String, title: String) {
+        this.tag = tag
+        videoView.release()
+        if (container != null) {
+            attachView(container, title)
+        } else {
+            attachWindow()
+        }
     }
 
-    fun addView(viewGroup: ViewGroup, name: String) {
-        viewGroup.visible()
-        viewGroup.addView(
-            videoView.getViewGroup(PlayerUtils.scanForActivity(viewGroup.context), name, this),
+    fun attachWindow() {
+        floatView.addToWindow(videoView.getPipVideo(this, this, this))
+        videoView.refreshVideoSize(VideoSizeChangedType.ATTACH_WINDOW)
+    }
+
+    fun attachView(container: ViewGroup, title: String) {
+        container.visible()
+        container.addView(
+            videoView.getViewVideo(container.scanActivity(), title, this),
             matchViewGroupParams
         )
-        videoView.refreshVideoSize(VideoSizeChangedType.ADD_VIEW_GROUP)
+        videoView.refreshVideoSize(VideoSizeChangedType.ATTACH_VIEW_GROUP)
         floatView.removeFromWindow()
     }
 
@@ -115,32 +105,32 @@ class PipVideoManager : OnPipOperateListener,
         videoView.release()
         videoView.removeViewFormParent()
         floatView.removeFromWindow()
-        _videoListener = null
+        pipManagerListener = null
         tag = null
     }
 
     fun onPause() {
-        if (isPipFloatView) return
+        if (isPipMode) return
         videoView.onPause()
     }
 
     fun onResume() {
-        if (isPipFloatView) return
+        if (isPipMode) return
         videoView.onResume()
     }
 
     fun onDestroy() {
-        if (isPipFloatView) return
+        if (isPipMode) return
         shutDown()
     }
 
     fun onBackPressed(): Boolean {
-        if (isPipFloatView) return false
+        if (isPipMode) return false
         return videoView.onBackPressed()
     }
 
     override fun onPipOperatePlayList(): Boolean {
-        return _playlist
+        return isPlayList
     }
 
     /******************* listener method start *************************/
@@ -149,15 +139,15 @@ class PipVideoManager : OnPipOperateListener,
     }
 
     override fun onPipOperateClickRestore() {
-        videoListener?.onPipRestore()
+        pipManagerListener?.onPipRestore()
     }
 
     override fun onPipOperateClickNext() {
-        videoListener?.onVideoPlayNext()
+        pipManagerListener?.onPipPlayNext()
     }
 
     override fun onPipOperateClickPrev() {
-        videoListener?.onVideoPlayPrev()
+        pipManagerListener?.onPipPlayPrev()
     }
 
     override fun onPipOperateClickRotation() {
@@ -169,7 +159,7 @@ class PipVideoManager : OnPipOperateListener,
     }
 
     override fun onPipErrorPlayList(): Boolean {
-        return _playlist
+        return isPlayList
     }
 
     override fun onPipErrorClickClose() {
@@ -189,7 +179,7 @@ class PipVideoManager : OnPipOperateListener,
     }
 
     override fun onPipCompletePlayList(): Boolean {
-        return _playlist
+        return isPlayList
     }
 
     override fun onPipCompleteClickClose() {
@@ -208,12 +198,16 @@ class PipVideoManager : OnPipOperateListener,
         onPipOperateClickPrev()
     }
 
-    override fun onViewOrientationRotationClick() {
+    override fun onViewOperateRotationClick() {
         onPipOperateClickRotation()
     }
 
-    override fun onViewOrientationScreenScaleClick() {
+    override fun onViewOperateScreenScaleClick() {
         onPipOperateClickScreenScale()
+    }
+
+    override fun onViewOperatePipClick() {
+        pipManagerListener?.onPipEntry()
     }
 
     /******************* listener method end *************************/

@@ -12,7 +12,7 @@ import xyz.doikki.videoplayer.pipextension.view.pip.PipOperateView
 import xyz.doikki.videoplayer.pipextension.view.pip.PipProgressView
 
 internal class PipController @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
 ) : GestureVideoController(context, attrs, defStyleAttr) {
 
     override fun getLayoutId(): Int {

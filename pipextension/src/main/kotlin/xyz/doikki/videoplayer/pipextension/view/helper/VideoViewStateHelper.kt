@@ -8,7 +8,7 @@ import xyz.doikki.videoplayer.player.BaseVideoView.SimpleOnStateChangeListener
 
 internal class VideoViewStateHelper(
     appCompatVideoView: AppCompatVideoView,
-    videoView: VideoView
+    videoView: VideoView,
 ) {
 
     private var completedAction: ((view: AppCompatVideoView) -> Unit)? = null

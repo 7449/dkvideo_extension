@@ -13,10 +13,4 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <Button
-        android:id="@+id/btn_pip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="打开画中画功能" />
-
 </LinearLayout>

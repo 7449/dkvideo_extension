@@ -6,7 +6,7 @@ import xyz.doikki.videoplayer.pipextension.listener.OnVideoSizeChangedListener
 import xyz.doikki.videoplayer.player.VideoView
 
 internal class VideoView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
 ) : VideoView(context, attrs, defStyleAttr) {
 
     private var listener: OnVideoSizeChangedListener? = null
@@ -17,10 +17,6 @@ internal class VideoView @JvmOverloads constructor(
 
     fun url(): String? {
         return mUrl
-    }
-
-    override fun setUrl(url: String, headers: MutableMap<String, String>?) {
-        super.setUrl(url, headers)
     }
 
     fun checkVideoSize(): Boolean {

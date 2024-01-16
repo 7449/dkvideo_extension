@@ -7,7 +7,9 @@ import xyz.doikki.videoplayer.controller.OrientationHelper
 import xyz.doikki.videoplayer.pipextension.PipVideoManager
 import xyz.doikki.videoplayer.pipextension.dp2pxInt
 import xyz.doikki.videoplayer.pipextension.isLandscape
+import xyz.doikki.videoplayer.pipextension.types.VideoRotation
 import xyz.doikki.videoplayer.pipextension.types.VideoScreenOrientation
+import xyz.doikki.videoplayer.pipextension.types.VideoScreenScaleType
 import xyz.doikki.videoplayer.pipextension.types.VideoSizeChangedType
 import xyz.doikki.videoplayer.pipextension.view.AppCompatVideoView
 import xyz.doikki.videoplayer.pipextension.view.VideoPipFloatView
@@ -16,7 +18,7 @@ import xyz.doikki.videoplayer.pipextension.view.view.VideoView
 
 internal class VideoViewOrientationHelper(
     private val appCompatVideoView: AppCompatVideoView,
-    private val videoView: VideoView
+    private val videoView: VideoView,
 ) : OrientationHelper.OnOrientationChangeListener {
 
     companion object {
@@ -72,9 +74,8 @@ internal class VideoViewOrientationHelper(
         if (videoView.url().isNullOrBlank()) return
         if (!videoView.isMp3() && !videoView.checkVideoSize()) return
 
-        val newVideoSize =
-            if (appCompatVideoView.parentView<VideoPipFloatView>() != null) pipVideoSize()
-            else viewVideoSize()
+        val newVideoSize = if (appCompatVideoView.parentView<VideoPipFloatView>() != null)
+            pipVideoSize() else viewVideoSize()
 
         appCompatVideoView.parentView<VideoPipFloatView>()
             ?.updateViewLayout(newVideoSize)
@@ -136,6 +137,65 @@ internal class VideoViewOrientationHelper(
         }
 
         return intArrayOf(widthPixels, (heightPixels / 1.5).toInt())
+    }
+
+    private class VideoViewRotationHelper(private val videoView: VideoView) {
+
+        private val videoRotationArray = VideoRotation.entries
+        private var videoRotation = VideoRotation.R_360
+        private var videoRotationIndex = 0
+
+        fun releaseRotation() {
+            videoRotation = VideoRotation.R_360
+            videoRotationIndex = 0
+            videoView.rotation = 0f
+        }
+
+        fun refreshVideoRotation() {
+            onChangedVideoRotation(videoRotationArray[videoRotationIndex].apply {
+                videoRotationIndex = (videoRotationIndex + 1) % videoRotationArray.size
+            })
+        }
+
+        fun videoSize(): IntArray {
+            val videoSize = videoView.videoSize
+            return when (videoRotation) {
+                VideoRotation.R_90 -> intArrayOf(videoSize.last(), videoSize.first())
+                VideoRotation.R_270 -> intArrayOf(videoSize.last(), videoSize.first())
+                else -> videoSize
+            }
+        }
+
+        private fun onChangedVideoRotation(rotation: VideoRotation) {
+            videoView.rotation = rotation.rotation.toFloat()
+            videoRotation = rotation
+        }
+
+    }
+
+    private class VideoViewScreenScaleHelper(private val videoView: VideoView) {
+
+        private val screenScaleTypes = VideoScreenScaleType.entries
+        private var screenScaleType = VideoScreenScaleType.SCREEN_SCALE_DEFAULT
+        private var screenScaleIndex = 1
+
+        fun releaseScreenScaleType() {
+            screenScaleType = VideoScreenScaleType.SCREEN_SCALE_DEFAULT
+            screenScaleIndex = 1
+            onChangedVideoScreenScaleType(screenScaleType)
+        }
+
+        fun refreshScreenScaleType() {
+            onChangedVideoScreenScaleType(screenScaleTypes[screenScaleIndex].apply {
+                screenScaleIndex = (screenScaleIndex + 1) % screenScaleTypes.size
+            })
+        }
+
+        private fun onChangedVideoScreenScaleType(scaleType: VideoScreenScaleType) {
+            videoView.setScreenScaleType(scaleType.scale)
+            screenScaleType = scaleType
+        }
+
     }
 
 }
