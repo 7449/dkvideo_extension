@@ -51,8 +51,12 @@ class PipVideoManager :
         .doOnPlayCompleted { onPipOperateClickNext() }
         .doOnPlayError { pipManagerListener?.onPipPlayError() }
 
-    fun setPipManagerListener(listener: OnPipManagerListener) {
-        pipManagerListener = listener
+    fun setPipManagerListener(listener: OnPipManagerListener): Boolean {
+        if (pipManagerListener != listener) {
+            pipManagerListener = listener
+            return true
+        }
+        return false
     }
 
     fun isPlayList(playlist: Boolean) = apply {

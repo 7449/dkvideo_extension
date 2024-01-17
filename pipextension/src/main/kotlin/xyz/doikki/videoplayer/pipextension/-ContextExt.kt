@@ -16,6 +16,7 @@ import android.view.WindowManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import xyz.doikki.videoplayer.pipextension.listener.OnPipManagerListener
 import xyz.doikki.videoplayer.util.PlayerUtils
 
 private const val TYPE_SYSTEM_ALERT_COMPATIBLE = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
@@ -88,4 +89,32 @@ class PipVideoManagerLifecycle : DefaultLifecycleObserver {
         PipVideoManager.instance.onDestroy()
     }
 
+}
+
+class SimplePipManagerListener(
+    private val pipEntry: () -> Unit = {},
+    private val pipRestore: () -> Unit = {},
+    private val pipPlayPrev: () -> Unit = {},
+    private val pipPlayNext: () -> Unit = {},
+    private val pipPlayError: () -> Unit = {},
+) : OnPipManagerListener {
+    override fun onPipEntry() {
+        pipEntry()
+    }
+
+    override fun onPipRestore() {
+        pipRestore()
+    }
+
+    override fun onPipPlayPrev() {
+        pipPlayPrev()
+    }
+
+    override fun onPipPlayNext() {
+        pipPlayNext()
+    }
+
+    override fun onPipPlayError() {
+        pipPlayError()
+    }
 }
