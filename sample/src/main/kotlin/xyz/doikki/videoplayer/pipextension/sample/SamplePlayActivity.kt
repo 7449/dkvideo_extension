@@ -1,18 +1,23 @@
 package xyz.doikki.videoplayer.pipextension.sample
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.FrameLayout
 import xyz.doikki.videoplayer.pipextension.simple.SimpleVideoActivity
 
-class SampleActivity : SimpleVideoActivity(R.layout.sample_activity) {
+class SamplePlayActivity : SimpleVideoActivity(R.layout.sample_activity) {
 
     private val videoView by lazy { findViewById<FrameLayout>(R.id.video) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        videoManager.isPlayList(false)
-        if (!isPipStartActivity()) {
-            onPlayerClickItem(Urls.W3C_H5)
+        findViewById<View>(R.id.play_list).setOnClickListener {
+            startActivity(Intent(this, SamplePlayListActivity::class.java))
+            finish()
+        }
+        findViewById<View>(R.id.play).setOnClickListener {
+            playVideo(Urls.W3C_H5)
         }
     }
 
@@ -21,31 +26,16 @@ class SampleActivity : SimpleVideoActivity(R.layout.sample_activity) {
         videoManager.isPlayList(false)
     }
 
-    override fun onPipComeBackActivity() {
-        startActivity(intent)
-    }
-
-    override fun onVideoPlayPrev() {
-    }
-
-    override fun onVideoPlayNext() {
-    }
-
-    private fun onPlayerClickItem(url: String, isTouch: Boolean = false) {
-        val rootView = if (!videoManager.isOverlay || isTouch) videoView
-        else null
-        videoManager.setVideoListener(this)
-        videoManager.showAnimView()
-        videoManager.attachVideo(rootView, url, url)
-        videoManager.showVideoView()
-        videoManager.startVideo(url)
-    }
-
-    private fun isPipStartActivity(): Boolean {
-        if (!videoManager.isOverlay) return false
-        videoManager.setVideoListener(this)
+    override fun onAttachVideoToView() {
         videoManager.attachView(videoView, "")
-        return true
+    }
+
+    private fun playVideo(url: String, isTouch: Boolean = false) {
+        val rootView = if (!videoManager.isOverlay || isTouch)
+            videoView
+        else
+            null
+        playVideo(url, url, url, rootView)
     }
 
 }

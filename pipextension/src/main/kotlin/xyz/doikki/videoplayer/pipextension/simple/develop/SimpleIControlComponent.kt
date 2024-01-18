@@ -1,4 +1,4 @@
-package xyz.doikki.videoplayer.pipextension.simple.widget.component
+package xyz.doikki.videoplayer.pipextension.simple.develop
 
 import android.view.View
 import android.view.animation.Animation
@@ -17,6 +17,9 @@ interface SimpleIControlComponent : IControlComponent {
     }
 
     override fun onPlayStateChanged(playState: Int) {
+        val videoState = SimpleVideoState.entries.find { it.state == playState }
+        requireNotNull(videoState) { "Unknown Video State $playState" }
+        onPlayStateChanged(videoState)
     }
 
     override fun onPlayerStateChanged(playerState: Int) {
@@ -24,5 +27,7 @@ interface SimpleIControlComponent : IControlComponent {
 
     override fun onLockStateChanged(isLocked: Boolean) {
     }
+
+    fun onPlayStateChanged(state: SimpleVideoState)
 
 }

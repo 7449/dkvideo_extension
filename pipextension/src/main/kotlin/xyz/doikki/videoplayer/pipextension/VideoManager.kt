@@ -1,44 +1,35 @@
 package xyz.doikki.videoplayer.pipextension
 
 import android.view.ViewGroup
-import xyz.doikki.videoplayer.pipextension.view.AppCompatVideoView
-import xyz.doikki.videoplayer.pipextension.view.VideoPipFloatView
-import xyz.doikki.videoplayer.pipextension.view.isParentView
-import xyz.doikki.videoplayer.pipextension.view.matchViewGroupParams
-import xyz.doikki.videoplayer.pipextension.view.removeViewFormParent
-import xyz.doikki.videoplayer.pipextension.view.visible
+import xyz.doikki.videoplayer.pipextension.initializer.VideoInitializer
+import xyz.doikki.videoplayer.pipextension.simple.develop.SourceVideoSize
+import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoContainerView
+import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoOverlayView
 
-class PipVideoManager :
-    OnPipOperateListener,
-    OnPipErrorListener,
-    OnPipCompleteListener,
-    OnViewOperateListener {
+object VideoManager {
 
-    companion object {
-        val instance = PipVideoManager()
-    }
-
-    val isPipMode: Boolean get() = videoView.isParentView<VideoPipFloatView>() && floatView.isShow()
+    val isOverlay: Boolean get() = videoView.isOverlayParent() && overlayView.isOverlay()
     val isPlaying: Boolean get() = videoView.isPlaying()
     val videoTag: String? get() = tag
 
     private var tag: String? = null
-    private var pipManagerListener: OnPipManagerListener? = null
+    private var onVideoListener: OnVideoListener? = null
     private var isPlayList = true
 
-    private val floatView = VideoPipFloatView(PipVideoInitializer.appContext)
-    private val videoView = AppCompatVideoView(PipVideoInitializer.appContext)
-        .doOnPlayBuffered { it.refreshVideoSize(VideoSizeChanged.BUFFERED) }
-        .doOnVideoSize { view, _ -> view.refreshVideoSize(VideoSizeChanged.VIDEO_SIZE_CALLBACK) }
-        .doOnPlayCompleted { onPipOperateClickNext() }
-        .doOnPlayError { pipManagerListener?.onPipPlayError() }
-
-    fun setPipManagerListener(listener: OnPipManagerListener): Boolean {
-        if (pipManagerListener != listener) {
-            pipManagerListener = listener
-            return true
+    private val overlayView = SimpleVideoOverlayView(VideoInitializer.appContext)
+    private val videoView = SimpleVideoContainerView(VideoInitializer.appContext)
+        .buffered { it.refreshVideoSize(SourceVideoSize.BUFFERED) }
+        .videoSize { view, _ -> view.refreshVideoSize(SourceVideoSize.VIDEO_SIZE) }
+        .error { onVideoListener?.onVideoPlayError() }
+        .completed {
+            if (isPlayList()) {
+                videoPlayNext()
+            }
         }
-        return false
+
+    fun setVideoListener(listener: OnVideoListener) {
+        onVideoListener = null
+        onVideoListener = listener
     }
 
     fun isPlayList(playlist: Boolean) = apply {
@@ -65,22 +56,22 @@ class PipVideoManager :
     }
 
     fun attachWindow() {
-        floatView.addToWindow(videoView.getPipVideo(this, this, this))
-        videoView.refreshVideoSize(VideoSizeChanged.ATTACH_WINDOW)
+        overlayView.addToWindow(videoView.getPipVideo())
+        videoView.refreshVideoSize(SourceVideoSize.ATTACH_WINDOW)
     }
 
     fun attachView(container: ViewGroup, title: String) {
         container.visible()
         container.addView(
-            videoView.getViewVideo(container.scanActivity(), title, this),
-            matchViewGroupParams
+            videoView.getViewVideo(container.scanActivity(), title),
+            videoMatchParams
         )
-        videoView.refreshVideoSize(VideoSizeChanged.ATTACH_VIEW_GROUP)
-        floatView.removeFromWindow()
+        videoView.refreshVideoSize(SourceVideoSize.ATTACH_VIEW)
+        overlayView.removeFromWindow()
     }
 
-    fun showProgressView() {
-        videoView.showProgressView()
+    fun showAnimView() {
+        videoView.showAnimView()
     }
 
     fun showVideoView() {
@@ -90,112 +81,61 @@ class PipVideoManager :
     fun shutDown() {
         videoView.release()
         videoView.removeViewFormParent()
-        floatView.removeFromWindow()
-        pipManagerListener = null
+        overlayView.removeFromWindow()
+        onVideoListener = null
         tag = null
     }
 
     fun onPause() {
-        if (isPipMode) return
+        if (isOverlay) return
         videoView.onPause()
     }
 
     fun onResume() {
-        if (isPipMode) return
+        if (isOverlay) return
         videoView.onResume()
     }
 
     fun onDestroy() {
-        if (isPipMode) return
+        if (isOverlay) return
         shutDown()
     }
 
     fun onBackPressed(): Boolean {
-        if (isPipMode) return false
+        if (isOverlay) return false
         return videoView.onBackPressed()
     }
 
-    override fun onPipOperatePlayList(): Boolean {
-        return isPlayList
-    }
-
-    /******************* listener method start *************************/
-    override fun onPipOperateClickClose() {
+    internal fun closePipMode() {
         shutDown()
     }
 
-    override fun onPipOperateClickRestore() {
-        pipManagerListener?.onPipRestore()
+    internal fun pipComeBackActivity() {
+        onVideoListener?.onPipComeBackActivity()
     }
 
-    override fun onPipOperateClickNext() {
-        pipManagerListener?.onPipPlayNext()
+    internal fun entryPipMode() {
+        onVideoListener?.onEntryPipMode()
     }
 
-    override fun onPipOperateClickPrev() {
-        pipManagerListener?.onPipPlayPrev()
+    internal fun videoPlayNext() {
+        onVideoListener?.onVideoPlayNext()
     }
 
-    override fun onPipOperateClickRotation() {
+    internal fun videoPlayPrev() {
+        onVideoListener?.onVideoPlayPrev()
+    }
+
+    internal fun refreshRotation() {
         videoView.refreshRotation()
     }
 
-    override fun onPipOperateClickScreenScale() {
-        videoView.refreshScreenScaleType()
+    internal fun refreshScreenScale() {
+        videoView.refreshScreenScale()
     }
 
-    override fun onPipErrorPlayList(): Boolean {
+    internal fun isPlayList(): Boolean {
         return isPlayList
     }
-
-    override fun onPipErrorClickClose() {
-        onPipOperateClickClose()
-    }
-
-    override fun onPipErrorClickRestore() {
-        onPipOperateClickRestore()
-    }
-
-    override fun onPipErrorClickNext() {
-        onPipOperateClickNext()
-    }
-
-    override fun onPipErrorClickPrev() {
-        onPipOperateClickPrev()
-    }
-
-    override fun onPipCompletePlayList(): Boolean {
-        return isPlayList
-    }
-
-    override fun onPipCompleteClickClose() {
-        onPipOperateClickClose()
-    }
-
-    override fun onPipCompleteClickRestore() {
-        onPipOperateClickRestore()
-    }
-
-    override fun onPipCompleteClickNext() {
-        onPipOperateClickNext()
-    }
-
-    override fun onPipCompleteClickPrev() {
-        onPipOperateClickPrev()
-    }
-
-    override fun onViewOperateRotationClick() {
-        onPipOperateClickRotation()
-    }
-
-    override fun onViewOperateScreenScaleClick() {
-        onPipOperateClickScreenScale()
-    }
-
-    override fun onViewOperatePipClick() {
-        pipManagerListener?.onPipEntry()
-    }
-
-    /******************* listener method end *************************/
 
 }

@@ -46,12 +46,12 @@ class VideoInitializer : Initializer<Unit> {
         }
 
         override fun saveProgress(url: String, progress: Long) {
-            if (VideoManager.instance.videoTag.isNullOrBlank()) return
-            progressSp.edit().putLong(VideoManager.instance.videoTag, progress).apply()
+            if (VideoManager.videoTag.isNullOrBlank()) return
+            progressSp.edit().putLong(VideoManager.videoTag, progress).apply()
         }
 
         override fun getSavedProgress(url: String): Long {
-            return progressSp.getLong(VideoManager.instance.videoTag, 0)
+            return progressSp.getLong(VideoManager.videoTag, 0)
         }
 
     }

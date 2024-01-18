@@ -1,4 +1,4 @@
-package xyz.doikki.videoplayer.pipextension.simple
+package xyz.doikki.videoplayer.pipextension.simple.develop
 
 import xyz.doikki.videoplayer.pipextension.OnVideoListener
 
@@ -9,23 +9,23 @@ class SimpleVideoListener(
     private val pipPlayNext: () -> Unit = {},
     private val pipPlayError: () -> Unit = {},
 ) : OnVideoListener {
-    override fun onPipEntry() {
+    override fun onEntryPipMode() {
         pipEntry()
     }
 
-    override fun onPipRestore() {
+    override fun onPipComeBackActivity() {
         pipRestore()
     }
 
-    override fun onPipPlayPrev() {
+    override fun onVideoPlayPrev() {
         pipPlayPrev()
     }
 
-    override fun onPipPlayNext() {
+    override fun onVideoPlayNext() {
         pipPlayNext()
     }
 
-    override fun onPipPlayError() {
+    override fun onVideoPlayError() {
         pipPlayError()
     }
 }

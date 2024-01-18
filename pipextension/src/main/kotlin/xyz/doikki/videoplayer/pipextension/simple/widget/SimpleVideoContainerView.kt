@@ -5,71 +5,60 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import xyz.doikki.videoplayer.pipextension.OnPipCompleteListener
-import xyz.doikki.videoplayer.pipextension.OnPipErrorListener
-import xyz.doikki.videoplayer.pipextension.OnPipOperateListener
-import xyz.doikki.videoplayer.pipextension.OnViewOperateListener
-import xyz.doikki.videoplayer.pipextension.VideoSizeChanged
 import xyz.doikki.videoplayer.pipextension.databinding.VideoLayoutPlayContainerBinding
-import xyz.doikki.videoplayer.pipextension.view.helper.VideoViewApiHelper
-import xyz.doikki.videoplayer.pipextension.view.helper.VideoViewOrientationHelper
-import xyz.doikki.videoplayer.pipextension.view.helper.VideoViewStateHelper
-import xyz.doikki.videoplayer.pipextension.view.helper.VideoViewUiHelper
+import xyz.doikki.videoplayer.pipextension.parentView
+import xyz.doikki.videoplayer.pipextension.simple.develop.SourceVideoSize
+import xyz.doikki.videoplayer.pipextension.simple.widget.helper.ApiHelper
+import xyz.doikki.videoplayer.pipextension.simple.widget.helper.ListenerHelper
+import xyz.doikki.videoplayer.pipextension.simple.widget.helper.OriHelper
+import xyz.doikki.videoplayer.pipextension.simple.widget.helper.UIHelper
 
-class AppCompatVideoView @JvmOverloads constructor(
+class SimpleVideoContainerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val viewBinding =
         VideoLayoutPlayContainerBinding.inflate(LayoutInflater.from(context), this, true)
 
-    private val apiHelper = VideoViewApiHelper(viewBinding.progress, viewBinding.videoView)
-    private val orientationHelper = VideoViewOrientationHelper(this, viewBinding.videoView)
-    private val stateHelper = VideoViewStateHelper(this, viewBinding.videoView)
-    private val uiHelper = VideoViewUiHelper(this, viewBinding.root, viewBinding.videoView)
+    private val listenerHelper = ListenerHelper(this, viewBinding.videoView)
+    private val apiHelper = ApiHelper(viewBinding.progress, viewBinding.videoView)
+    private val uiHelper = UIHelper(this, viewBinding.root, viewBinding.videoView)
+    private val oriHelper = OriHelper(this, viewBinding.videoView)
 
-    fun doOnPlayCompleted(action: (view: AppCompatVideoView) -> Unit) = apply {
-        stateHelper.doOnPlayCompleted(action)
+    fun completed(action: (view: SimpleVideoContainerView) -> Unit) = apply {
+        listenerHelper.completed(action)
     }
 
-    fun doOnPlayBuffering(action: (view: AppCompatVideoView) -> Unit) = apply {
-        stateHelper.doOnPlayBuffering(action)
+    fun buffering(action: (view: SimpleVideoContainerView) -> Unit) = apply {
+        listenerHelper.buffering(action)
     }
 
-    fun doOnPlayBuffered(action: (view: AppCompatVideoView) -> Unit) = apply {
-        stateHelper.doOnPlayBuffered(action)
+    fun buffered(action: (view: SimpleVideoContainerView) -> Unit) = apply {
+        listenerHelper.buffered(action)
     }
 
-    fun doOnPlayError(action: (view: AppCompatVideoView) -> Unit) = apply {
-        stateHelper.doOnPlayError(action)
+    fun error(action: (view: SimpleVideoContainerView) -> Unit) = apply {
+        listenerHelper.error(action)
     }
 
-    fun doOnPlaying(action: (view: AppCompatVideoView) -> Unit) = apply {
-        stateHelper.doOnPlaying(action)
+    fun playing(action: (view: SimpleVideoContainerView) -> Unit) = apply {
+        listenerHelper.playing(action)
     }
 
-    fun doOnVideoSize(action: (view: AppCompatVideoView, size: IntArray) -> Unit) = apply {
-        stateHelper.doOnVideoSize(action)
+    fun videoSize(action: (view: SimpleVideoContainerView, size: IntArray) -> Unit) = apply {
+        listenerHelper.videoSize(action)
     }
 
-    fun getPipVideo(
-        operateListener: OnPipOperateListener,
-        errorListener: OnPipErrorListener,
-        completeListener: OnPipCompleteListener,
-    ) = apply {
-        orientationHelper.releaseRotation()
-        orientationHelper.releaseScreenScaleType()
-        uiHelper.pipControllerView(operateListener, errorListener, completeListener)
+    fun getPipVideo() = apply {
+        oriHelper.releaseRotation()
+        oriHelper.releaseScreenScale()
+        uiHelper.pipController()
     }
 
-    fun getViewVideo(
-        activity: Activity,
-        title: String,
-        operateListener: OnViewOperateListener,
-    ) = apply {
-        orientationHelper.releaseRotation()
-        orientationHelper.releaseScreenScaleType()
-        uiHelper.viewGroupControllerView(activity, title, operateListener)
+    fun getViewVideo(activity: Activity, title: String) = apply {
+        oriHelper.releaseRotation()
+        oriHelper.releaseScreenScale()
+        uiHelper.viewController(activity, title)
     }
 
     fun startVideo(url: String) {
@@ -82,8 +71,8 @@ class AppCompatVideoView @JvmOverloads constructor(
 
     fun release() {
         apiHelper.release()
-        orientationHelper.releaseRotation()
-        orientationHelper.releaseScreenScaleType()
+        oriHelper.releaseRotation()
+        oriHelper.releaseScreenScale()
     }
 
     fun onPause() {
@@ -98,8 +87,8 @@ class AppCompatVideoView @JvmOverloads constructor(
         return apiHelper.onBackPressed()
     }
 
-    fun showProgressView() {
-        apiHelper.showProgressView()
+    fun showAnimView() {
+        apiHelper.showAnimView()
     }
 
     fun showVideoView() {
@@ -107,25 +96,29 @@ class AppCompatVideoView @JvmOverloads constructor(
     }
 
     fun refreshRotation() {
-        orientationHelper.refreshRotation()
+        oriHelper.refreshRotation()
     }
 
-    fun refreshScreenScaleType() {
-        orientationHelper.refreshScreenScaleType()
+    fun refreshScreenScale() {
+        oriHelper.refreshScreenScale()
     }
 
-    fun refreshVideoSize(videoSizeChangedType: VideoSizeChanged) {
-        orientationHelper.refreshVideoSize(videoSizeChangedType)
+    fun refreshVideoSize(videoSizeChangedType: SourceVideoSize) {
+        oriHelper.refreshVideoSize(videoSizeChangedType)
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        orientationHelper.onAttachedToWindow()
+        oriHelper.onAttachedToWindow()
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        orientationHelper.onDetachedFromWindow()
+        oriHelper.onDetachedFromWindow()
+    }
+
+    fun isOverlayParent(): Boolean {
+        return parentView<SimpleVideoOverlayView>() != null
     }
 
 }

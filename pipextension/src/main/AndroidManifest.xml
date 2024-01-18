@@ -10,7 +10,7 @@
             android:exported="false"
             tools:node="merge">
             <meta-data
-                android:name="xyz.doikki.videoplayer.pipextension.PipVideoInitializer"
+                android:name="xyz.doikki.videoplayer.pipextension.initializer.VideoInitializer"
                 android:value="androidx.startup" />
         </provider>
 

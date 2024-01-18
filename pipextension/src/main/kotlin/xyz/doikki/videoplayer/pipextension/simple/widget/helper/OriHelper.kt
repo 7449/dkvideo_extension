@@ -5,19 +5,17 @@ import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
 import xyz.doikki.videoplayer.controller.OrientationHelper
 import xyz.doikki.videoplayer.pipextension.VideoManager
-import xyz.doikki.videoplayer.pipextension.VideoOrientation
-import xyz.doikki.videoplayer.pipextension.VideoRotation
-import xyz.doikki.videoplayer.pipextension.VideoScreenScale
-import xyz.doikki.videoplayer.pipextension.VideoSizeChanged
 import xyz.doikki.videoplayer.pipextension.dp2px
 import xyz.doikki.videoplayer.pipextension.isLandscape
 import xyz.doikki.videoplayer.pipextension.parentView
+import xyz.doikki.videoplayer.pipextension.simple.develop.SourceVideoSize
+import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoContainerView
 import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoOverlayView
 import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoView
-import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoContainerView
+import xyz.doikki.videoplayer.player.BaseVideoView
 
-class OrienHelper(
-    private val appCompatVideoView: SimpleVideoContainerView,
+class OriHelper(
+    private val container: SimpleVideoContainerView,
     private val videoView: SimpleVideoView,
 ) : OrientationHelper.OnOrientationChangeListener {
 
@@ -25,10 +23,14 @@ class OrienHelper(
         private const val DEFAULT_VIDEO_MARGIN = 100
     }
 
-    private val screenScaleHelper = VideoViewScreenScaleHelper(videoView)
-    private val rotationHelper = VideoViewRotationHelper(videoView)
+    private enum class VideoOrientation { LANDSCAPE, PORT, }
+
     private val orientationHelper = OrientationHelper(videoView.context)
-    private var screenOrientation = refreshOrientationType()
+
+    private val screenScaleHelper = ScreenScaleHelper(videoView)
+    private val rotationHelper = RotationHelper(videoView)
+
+    private var currentOrientationType = orientationType()
 
     override fun onOrientationChanged(orientation: Int) {
         val resources = videoView.resources
@@ -36,14 +38,14 @@ class OrienHelper(
         val heightPixels = resources.displayMetrics.heightPixels
         val value = if (widthPixels > heightPixels) VideoOrientation.LANDSCAPE
         else VideoOrientation.PORT
-        if (screenOrientation != value) {
-            refreshVideoSize(VideoSizeChanged.ORIENTATION)
-            screenOrientation = value
+        if (currentOrientationType != value) {
+            refreshVideoSize(SourceVideoSize.ORI)
+            currentOrientationType = value
         }
     }
 
     fun onAttachedToWindow() {
-        screenOrientation = refreshOrientationType()
+        currentOrientationType = orientationType()
         orientationHelper.setOnOrientationChangeListener(this)
         orientationHelper.enable()
     }
@@ -54,53 +56,52 @@ class OrienHelper(
     }
 
     fun refreshRotation() {
-        rotationHelper.refreshVideoRotation()
-        refreshVideoSize(VideoSizeChanged.REFRESH_ROTATION)
+        rotationHelper.refresh()
+        refreshVideoSize(SourceVideoSize.ROTATION)
     }
 
     fun releaseRotation() {
-        rotationHelper.releaseRotation()
+        rotationHelper.release()
     }
 
-    fun releaseScreenScaleType() {
-        screenScaleHelper.releaseScreenScaleType()
+    fun refreshScreenScale() {
+        screenScaleHelper.refresh()
     }
 
-    fun refreshScreenScaleType() {
-        screenScaleHelper.refreshScreenScaleType()
+    fun releaseScreenScale() {
+        screenScaleHelper.release()
     }
 
-    fun refreshVideoSize(type: VideoSizeChanged) {
+    private fun orientationType(): VideoOrientation {
+        return if (videoView.context.isLandscape) VideoOrientation.LANDSCAPE else VideoOrientation.PORT
+    }
+
+    fun refreshVideoSize(type: SourceVideoSize) {
         if (videoView.url.isBlank()) return
         if (!videoView.isMp3 && !videoView.inspectSize) return
 
-        val newVideoSize = if (appCompatVideoView.parentView<SimpleVideoOverlayView>() != null)
-            pipVideoSize() else viewVideoSize()
+        val newVideoSize =
+            if (container.isOverlayParent()) correctPipVideoSize() else correctViewVideoSize()
 
-        appCompatVideoView.parentView<SimpleVideoOverlayView>()
+        container.parentView<SimpleVideoOverlayView>()
             ?.updateViewLayout(newVideoSize)
-            ?: appCompatVideoView.parentView<ViewGroup>()?.updateLayoutParams {
+            ?: container.parentView<ViewGroup>()?.updateLayoutParams {
                 width = newVideoSize.first()
                 height = newVideoSize.last()
             }
 
-        screenScaleHelper.releaseScreenScaleType()
+        screenScaleHelper.release()
 
         Log.e(
             "Print",
-            "RefreshVideoSize: \n来源:$type ${VideoManager.instance.videoTag} "
+            "RefreshVideoSize: \n来源:$type ${VideoManager.videoTag} "
                     + "\n视频原尺寸:${videoView.videoSize.contentToString()}"
                     + "\n视频新尺寸:${newVideoSize.contentToString()}"
         )
-
     }
 
-    private fun refreshOrientationType(): VideoOrientation {
-        return if (videoView.context.isLandscape) VideoOrientation.LANDSCAPE else VideoOrientation.PORT
-    }
-
-    private fun pipVideoSize(): IntArray {
-        val defaultSize = rotationHelper.videoSize()
+    private fun correctPipVideoSize(): IntArray {
+        val defaultSize = rotationHelper.rotationVideoSize()
         val width = defaultSize.first()
         val height = defaultSize.last()
 
@@ -110,6 +111,7 @@ class OrienHelper(
 
         val landScapeWidth = widthPixels.coerceAtMost(heightPixels) - DEFAULT_VIDEO_MARGIN
         if (videoView.isMp3) return intArrayOf(landScapeWidth, 150f.dp2px())
+
         val landScapeHeight = (landScapeWidth.toFloat() / width * height).toInt()
         if (width >= height) return intArrayOf(landScapeWidth, landScapeHeight)
         val portWidth = landScapeWidth / (if (widthPixels < heightPixels) 1.7 else 2.0)
@@ -117,8 +119,8 @@ class OrienHelper(
         return intArrayOf(portWidth.toInt(), portHeight.toInt())
     }
 
-    private fun viewVideoSize(): IntArray {
-        val defaultSize = rotationHelper.videoSize()
+    private fun correctViewVideoSize(): IntArray {
+        val defaultSize = rotationHelper.rotationVideoSize()
         val width = defaultSize.first()
         val height = defaultSize.last()
 
@@ -139,61 +141,73 @@ class OrienHelper(
         return intArrayOf(widthPixels, (heightPixels / 1.5).toInt())
     }
 
-    private class VideoViewRotationHelper(private val videoView: SimpleVideoView) {
+    private class RotationHelper(private val videoView: SimpleVideoView) {
 
-        private val videoRotationArray = VideoRotation.entries
-        private var videoRotation = VideoRotation.R_360
-        private var videoRotationIndex = 0
-
-        fun releaseRotation() {
-            videoRotation = VideoRotation.R_360
-            videoRotationIndex = 0
-            videoView.rotation = 0f
+        private enum class Rotation(val rotation: Int) {
+            R_90(90), R_180(180), R_270(270), R_360(360),
         }
 
-        fun refreshVideoRotation() {
-            onChangedVideoRotation(videoRotationArray[videoRotationIndex].apply {
-                videoRotationIndex = (videoRotationIndex + 1) % videoRotationArray.size
-            })
-        }
+        private val rotationArray = Rotation.entries
+        private var rotation = Rotation.R_360
+        private var rotationIndex = 0
 
-        fun videoSize(): IntArray {
+        fun rotationVideoSize(): IntArray {
             val videoSize = videoView.videoSize
-            return when (videoRotation) {
-                VideoRotation.R_90 -> intArrayOf(videoSize.last(), videoSize.first())
-                VideoRotation.R_270 -> intArrayOf(videoSize.last(), videoSize.first())
+            return when (rotation) {
+                Rotation.R_90, Rotation.R_270 -> intArrayOf(videoSize.last(), videoSize.first())
                 else -> videoSize
             }
         }
 
-        private fun onChangedVideoRotation(rotation: VideoRotation) {
+        fun release() {
+            rotation = Rotation.R_360
+            rotationIndex = 0
+            videoView.rotation = 0f
+        }
+
+        fun refresh() {
+            onChangedRotation(rotationArray[rotationIndex].apply {
+                rotationIndex = (rotationIndex + 1) % rotationArray.size
+            })
+        }
+
+        private fun onChangedRotation(rotation: Rotation) {
             videoView.rotation = rotation.rotation.toFloat()
-            videoRotation = rotation
+            this.rotation = rotation
         }
 
     }
 
-    private class VideoViewScreenScaleHelper(private val videoView: SimpleVideoView) {
+    private class ScreenScaleHelper(private val videoView: SimpleVideoView) {
 
-        private val screenScaleTypes = VideoScreenScale.entries
-        private var screenScaleType = VideoScreenScale.SCREEN_SCALE_DEFAULT
-        private var screenScaleIndex = 1
-
-        fun releaseScreenScaleType() {
-            screenScaleType = VideoScreenScale.SCREEN_SCALE_DEFAULT
-            screenScaleIndex = 1
-            onChangedVideoScreenScaleType(screenScaleType)
+        private enum class ScreenScale(val scale: Int) {
+            SCREEN_SCALE_DEFAULT(BaseVideoView.SCREEN_SCALE_DEFAULT),
+            SCREEN_SCALE_16_9(BaseVideoView.SCREEN_SCALE_16_9),
+            SCREEN_SCALE_4_3(BaseVideoView.SCREEN_SCALE_4_3),
+            SCREEN_SCALE_MATCH_PARENT(BaseVideoView.SCREEN_SCALE_MATCH_PARENT),
+            SCREEN_SCALE_ORIGINAL(BaseVideoView.SCREEN_SCALE_ORIGINAL),
+            SCREEN_SCALE_CENTER_CROP(BaseVideoView.SCREEN_SCALE_CENTER_CROP),
         }
 
-        fun refreshScreenScaleType() {
-            onChangedVideoScreenScaleType(screenScaleTypes[screenScaleIndex].apply {
-                screenScaleIndex = (screenScaleIndex + 1) % screenScaleTypes.size
+        private val scaleTypes = ScreenScale.entries
+        private var scaleType = ScreenScale.SCREEN_SCALE_DEFAULT
+        private var scaleIndex = 1
+
+        fun release() {
+            scaleType = ScreenScale.SCREEN_SCALE_DEFAULT
+            scaleIndex = 1
+            onChangedScreenScaleType(scaleType)
+        }
+
+        fun refresh() {
+            onChangedScreenScaleType(scaleTypes[scaleIndex].apply {
+                scaleIndex = (scaleIndex + 1) % scaleTypes.size
             })
         }
 
-        private fun onChangedVideoScreenScaleType(scaleType: VideoScreenScale) {
+        private fun onChangedScreenScaleType(scaleType: ScreenScale) {
             videoView.setScreenScaleType(scaleType.scale)
-            screenScaleType = scaleType
+            this.scaleType = scaleType
         }
 
     }

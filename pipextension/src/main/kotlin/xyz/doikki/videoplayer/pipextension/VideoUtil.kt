@@ -62,9 +62,6 @@ fun View.removeViewFormParent() {
 fun View.visible() = let { if (!isVisible) visibility = View.VISIBLE }
 fun View.gone() = let { if (!isGone) visibility = View.GONE }
 
-fun Array<View>.visible() = forEach { it.visible() }
-fun Array<View>.gone() = forEach { it.gone() }
-
 val videoMatchParams: ViewGroup.LayoutParams
     get() = ViewGroup.LayoutParams(
         ViewGroup.LayoutParams.MATCH_PARENT,

@@ -11,11 +11,11 @@ import xyz.doikki.videocontroller.component.TitleView
 import xyz.doikki.videocontroller.component.VodControlView
 import xyz.doikki.videoplayer.pipextension.simple.widget.component.SimpleVideoComponent
 
-class ViewController @JvmOverloads constructor(
+class SimpleViewController @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
 ) : StandardVideoController(context, attrs, defStyleAttr) {
 
-    fun setComponent(title: String) {
+    fun addControlComponents(title: String) {
         addDefaultControlComponent(title, false)
         addControlComponent(SimpleVideoComponent(context))
     }

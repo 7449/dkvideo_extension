@@ -1,5 +1,6 @@
 package xyz.doikki.videoplayer.pipextension.simple.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PixelFormat
@@ -12,12 +13,12 @@ import android.view.ViewConfiguration
 import android.view.WindowManager
 import android.widget.FrameLayout
 import xyz.doikki.videoplayer.pipextension.R
-import xyz.doikki.videoplayer.pipextension.floatType
+import xyz.doikki.videoplayer.pipextension.overlayType
 import xyz.doikki.videoplayer.pipextension.statusBarHeight
 import xyz.doikki.videoplayer.util.PlayerUtils
 import kotlin.math.abs
 
-class SimpleVideoOverlaysView @JvmOverloads constructor(
+class SimpleVideoOverlayView @JvmOverloads constructor(
     context: Context, downX: Int = 50, downY: Int = 50,
 ) : FrameLayout(context) {
 
@@ -25,11 +26,11 @@ class SimpleVideoOverlaysView @JvmOverloads constructor(
     private val layoutParams = WindowManager.LayoutParams()
     private val downRawPointF = PointF(0f, 0f)
     private val downPoint = Point(downX, downY)
-    private var isOverlays = false
+    private var isOverlay = false
 
     init {
         setBackgroundColor(Color.TRANSPARENT)
-        layoutParams.floatType()
+        layoutParams.overlayType()
         layoutParams.format = PixelFormat.TRANSLUCENT
         layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
         layoutParams.windowAnimations = R.style.ThemeSampleFloatWindowAnimation
@@ -47,15 +48,15 @@ class SimpleVideoOverlaysView @JvmOverloads constructor(
         windowManager.updateViewLayout(this, layoutParams)
     }
 
-    fun isShow(): Boolean {
-        return isOverlays
+    fun isOverlay(): Boolean {
+        return isOverlay
     }
 
     fun addToWindow(view: View) {
         addView(view)
         if (!isAttachedToWindow) {
             windowManager.addView(this, layoutParams)
-            isOverlays = true
+            isOverlay = true
         }
     }
 
@@ -63,7 +64,7 @@ class SimpleVideoOverlaysView @JvmOverloads constructor(
         removeAllViews()
         if (isAttachedToWindow) {
             windowManager.removeViewImmediate(this)
-            isOverlays = false
+            isOverlay = false
         }
     }
 
@@ -86,6 +87,7 @@ class SimpleVideoOverlaysView @JvmOverloads constructor(
         return intercepted
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_MOVE) {
             val x = event.rawX.toInt()

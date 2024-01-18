@@ -13,7 +13,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="MissingApplicationIcon">
         <activity
-            android:name=".SampleActivity"
+            android:name=".SamplePlayActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:exported="true">
             <intent-filter>
@@ -22,6 +22,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SamplePlayListActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout" />
     </application>
 
 </manifest>

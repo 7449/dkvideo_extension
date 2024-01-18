@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/black">
 
-        <xyz.doikki.videoplayer.pipextension.view.view.VideoView
+        <xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoView
             android:id="@+id/video_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

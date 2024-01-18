@@ -1,4 +1,4 @@
-package xyz.doikki.videoplayer.pipextension.simple
+package xyz.doikki.videoplayer.pipextension.simple.develop
 
 import xyz.doikki.videoplayer.player.BaseVideoView
 

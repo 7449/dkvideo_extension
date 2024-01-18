@@ -11,41 +11,54 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginTop="5dp"
-        android:importantForAccessibility="no"
         android:padding="5dp"
         android:src="@drawable/video_icon_play_rotation"
-        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/pip"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/pip"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginTop="5dp"
-        android:importantForAccessibility="no"
         android:padding="5dp"
         android:src="@drawable/video_icon_play_pip"
-        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/scale"
         app:layout_constraintStart_toEndOf="@id/rotation"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/scale"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginTop="5dp"
-        android:importantForAccessibility="no"
         android:padding="5dp"
         android:src="@drawable/video_icon_play_scale"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/pip"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/prev"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="5dp"
+        android:padding="5dp"
+        android:src="@drawable/video_icon_play_prev"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/next"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="5dp"
+        android:padding="5dp"
+        android:src="@drawable/video_icon_play_next"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

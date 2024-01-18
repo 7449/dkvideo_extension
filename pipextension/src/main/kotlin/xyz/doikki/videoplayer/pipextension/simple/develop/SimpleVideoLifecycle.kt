@@ -1,4 +1,4 @@
-package xyz.doikki.videoplayer.pipextension.simple
+package xyz.doikki.videoplayer.pipextension.simple.develop
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -8,17 +8,17 @@ class SimpleVideoLifecycle : DefaultLifecycleObserver {
 
     override fun onPause(owner: LifecycleOwner) {
         super.onPause(owner)
-        VideoManager.instance.onPause()
+        VideoManager.onPause()
     }
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
-        VideoManager.instance.onResume()
+        VideoManager.onResume()
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
-        VideoManager.instance.onDestroy()
+        VideoManager.onDestroy()
     }
 
 }

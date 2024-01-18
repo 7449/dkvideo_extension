@@ -1,14 +1,11 @@
-package xyz.doikki.videoplayer.pipextension.view.helper
+package xyz.doikki.videoplayer.pipextension.simple.widget.helper
 
 import android.view.View
 import xyz.doikki.videoplayer.pipextension.gone
 import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoView
 import xyz.doikki.videoplayer.pipextension.visible
 
-class VideoViewApiHelper(
-    private val progressView: View,
-    private val videoView: SimpleVideoView,
-) {
+class ApiHelper(private val animView: View, private val videoView: SimpleVideoView) {
 
     fun startVideo(url: String) {
         videoView.revertSize()
@@ -38,14 +35,14 @@ class VideoViewApiHelper(
         return videoView.onBackPressed()
     }
 
-    fun showProgressView() {
+    fun showAnimView() {
         videoView.gone()
-        progressView.visible()
+        animView.visible()
     }
 
     fun showVideoView() {
         videoView.visible()
-        progressView.gone()
+        animView.gone()
     }
 
 }

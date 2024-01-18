@@ -11,7 +11,6 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:background="@drawable/video_shape_play_start_bg"
-        android:importantForAccessibility="no"
         android:padding="10dp"
         android:src="@drawable/video_selector_play_start"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -24,93 +23,73 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:indeterminateDrawable="@drawable/video_shape_play_progress"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/close"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_margin="5dp"
-        android:importantForAccessibility="no"
         android:padding="5dp"
         android:src="@drawable/video_icon_play_close"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/restore"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_margin="5dp"
-        android:importantForAccessibility="no"
         android:padding="5dp"
         android:src="@drawable/video_icon_play_full"
-        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/prev"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginStart="5dp"
-        android:importantForAccessibility="no"
         android:padding="5dp"
         android:src="@drawable/video_icon_play_prev"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/next"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginEnd="5dp"
-        android:importantForAccessibility="no"
         android:padding="5dp"
         android:src="@drawable/video_icon_play_next"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/rotation"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginTop="5dp"
-        android:importantForAccessibility="no"
         android:padding="5dp"
         android:src="@drawable/video_icon_play_rotation"
-        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/scale"
         app:layout_constraintStart_toEndOf="@id/restore"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/scale"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginTop="5dp"
-        android:importantForAccessibility="no"
         android:padding="5dp"
         android:src="@drawable/video_icon_play_scale"
-        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/close"
         app:layout_constraintStart_toEndOf="@id/rotation"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

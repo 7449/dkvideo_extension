@@ -8,7 +8,7 @@ import xyz.doikki.videoplayer.pipextension.simple.widget.component.SimplePipComp
 import xyz.doikki.videoplayer.pipextension.simple.widget.component.SimplePipErrorComponent
 import xyz.doikki.videoplayer.pipextension.simple.widget.component.SimplePipProgressComponent
 
-class PipController @JvmOverloads constructor(
+class SimplePipController @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
 ) : GestureVideoController(context, attrs, defStyleAttr) {
 
