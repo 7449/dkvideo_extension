@@ -13,14 +13,14 @@ object VideoManager {
     val videoTag: String? get() = tag
 
     private var tag: String? = null
-    private var onVideoListener: OnVideoListener? = null
+    private var videoListener: OnVideoListener? = null
     private var isPlayList = true
 
     private val overlayView = SimpleVideoOverlayView(VideoInitializer.appContext)
     private val videoView = SimpleVideoContainerView(VideoInitializer.appContext)
         .buffered { it.refreshVideoSize(SourceVideoSize.BUFFERED) }
         .videoSize { view, _ -> view.refreshVideoSize(SourceVideoSize.VIDEO_SIZE) }
-        .error { onVideoListener?.onVideoPlayError() }
+        .error { videoListener?.onVideoPlayError() }
         .completed {
             if (isPlayList()) {
                 videoPlayNext()
@@ -28,8 +28,8 @@ object VideoManager {
         }
 
     fun setVideoListener(listener: OnVideoListener) {
-        onVideoListener = null
-        onVideoListener = listener
+        videoListener = null
+        videoListener = listener
     }
 
     fun isPlayList(playlist: Boolean) = apply {
@@ -41,11 +41,11 @@ object VideoManager {
     }
 
     fun startVideo(container: ViewGroup?, tag: String, title: String, url: String) {
-        attachVideo(container, tag, title)
+        attachParent(container, tag, title)
         startVideo(url)
     }
 
-    fun attachVideo(container: ViewGroup?, tag: String, title: String) {
+    fun attachParent(container: ViewGroup?, tag: String, title: String) {
         this.tag = tag
         videoView.release()
         if (container != null) {
@@ -82,7 +82,7 @@ object VideoManager {
         videoView.release()
         videoView.removeViewFormParent()
         overlayView.removeFromWindow()
-        onVideoListener = null
+        videoListener = null
         tag = null
     }
 
@@ -111,19 +111,19 @@ object VideoManager {
     }
 
     internal fun pipComeBackActivity() {
-        onVideoListener?.onPipComeBackActivity()
+        videoListener?.onPipComeBackActivity()
     }
 
     internal fun entryPipMode() {
-        onVideoListener?.onEntryPipMode()
+        videoListener?.onEntryPipMode()
     }
 
     internal fun videoPlayNext() {
-        onVideoListener?.onVideoPlayNext()
+        videoListener?.onVideoPlayNext()
     }
 
     internal fun videoPlayPrev() {
-        onVideoListener?.onVideoPlayPrev()
+        videoListener?.onVideoPlayPrev()
     }
 
     internal fun refreshRotation() {

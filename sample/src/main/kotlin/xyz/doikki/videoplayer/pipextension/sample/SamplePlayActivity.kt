@@ -1,41 +1,87 @@
 package xyz.doikki.videoplayer.pipextension.sample
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import xyz.doikki.videoplayer.pipextension.simple.SimpleVideoActivity
+import xyz.doikki.videoplayer.pipextension.simple.SimpleVideoListActivity
 
-class SamplePlayActivity : SimpleVideoActivity(R.layout.sample_activity) {
+class SamplePlayActivity : SimpleVideoListActivity(R.layout.sample_video_activity) {
 
-    private val videoView by lazy { findViewById<FrameLayout>(R.id.video) }
+    companion object {
+        private val items = Urls.playList
+    }
+
+    private val adapter = SamplePlayListAdapter(
+        onClick = {
+            playVideo(it, true)
+        },
+        onLongClick = {
+        }
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        findViewById<View>(R.id.play_list).setOnClickListener {
-            startActivity(Intent(this, SamplePlayListActivity::class.java))
-            finish()
-        }
-        findViewById<View>(R.id.play).setOnClickListener {
-            playVideo(Urls.W3C_H5)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        videoManager.isPlayList(false)
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+        recyclerView.adapter = adapter
     }
 
     override fun onAttachVideoToView() {
-        videoManager.attachView(videoView, "")
+        videoManager.attachView(findViewById<FrameLayout>(R.id.video), "")
     }
 
-    private fun playVideo(url: String, isTouch: Boolean = false) {
-        val rootView = if (!videoManager.isOverlay || isTouch)
-            videoView
-        else
-            null
-        playVideo(url, url, url, rootView)
+    override fun onPipComeBackActivity() {
+        startActivity(intent)
+    }
+
+    override fun onVideoPlayPrev() {
+    }
+
+    override fun onVideoPlayNext() {
+    }
+
+    private fun playVideo(url: String, forceView: Boolean = false) {
+        val parent = if (!videoManager.isOverlay || forceView)
+            findViewById<FrameLayout>(R.id.video)
+        else null
+        playVideo(url, url, url, parent)
+    }
+
+    private class SamplePlayListAdapter(
+        private val onClick: (String) -> Unit,
+        private val onLongClick: (String) -> Unit,
+    ) : RecyclerView.Adapter<SamplePlayListAdapter.ViewHolder>() {
+
+        private class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val url: TextView = view.findViewById(R.id.url)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            return ViewHolder(
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.sample_url_item, parent, false)
+            ).apply {
+                itemView.setOnClickListener {
+                    onClick(items[adapterPosition])
+                }
+                itemView.setOnLongClickListener {
+                    onLongClick(items[adapterPosition])
+                    return@setOnLongClickListener true
+                }
+            }
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            holder.url.text = items[position]
+        }
+
+        override fun getItemCount(): Int {
+            return items.size
+        }
     }
 
 }

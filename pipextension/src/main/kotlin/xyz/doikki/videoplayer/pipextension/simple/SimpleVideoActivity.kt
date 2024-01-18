@@ -84,18 +84,18 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout),
     private fun isComeBackActivity(): Boolean {
         if (!videoManager.isOverlay) return false
         videoManager.setVideoListener(this)
-        return true
+        return videoManager.isPlaying
     }
 
     protected fun playVideo(
         url: String,
         tag: String,
         title: String,
-        container: ViewGroup?,
+        parent: ViewGroup?,
     ) {
         videoManager.setVideoListener(this)
         videoManager.showAnimView()
-        videoManager.attachVideo(container, tag, title)
+        videoManager.attachParent(parent, tag, title)
         videoManager.showVideoView()
         videoManager.startVideo(url)
     }
@@ -103,12 +103,12 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout),
     protected suspend fun playVideo(
         tag: String,
         title: String,
-        container: ViewGroup?,
+        parent: ViewGroup?,
         scope: suspend () -> String,
     ) {
         videoManager.setVideoListener(this)
         videoManager.showAnimView()
-        videoManager.attachVideo(container, tag, title)
+        videoManager.attachParent(parent, tag, title)
         val url = scope.invoke()
         videoManager.showVideoView()
         videoManager.startVideo(url)
