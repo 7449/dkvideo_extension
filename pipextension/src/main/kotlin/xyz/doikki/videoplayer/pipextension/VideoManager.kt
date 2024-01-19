@@ -115,7 +115,7 @@ object VideoManager {
     }
 
     internal fun entryPipMode() {
-        videoListener?.onEntryPipMode()
+        videoListener?.onSwitchPipMode(videoView.parentView())
     }
 
     internal fun videoPlayNext() {

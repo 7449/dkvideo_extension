@@ -9,6 +9,8 @@ import android.os.Build
 import android.provider.Settings
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.view.WindowManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.view.isGone
@@ -48,7 +50,21 @@ fun ActivityResultLauncher<Intent>.launchOverlay() {
     }
 }
 
-inline fun <reified T : View> View.isParentView(): Boolean = parent is T
+fun Activity.fullScreen() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val controller = window.insetsController
+        controller?.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+        controller?.systemBarsBehavior =
+            WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    } else {
+        @Suppress("DEPRECATION")
+        window.decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_FULLSCREEN or
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                )
+    }
+}
 
 inline fun <reified T : View> View.parentView(): T? = if (parent is T) parent as T else null
 

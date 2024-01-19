@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import xyz.doikki.videoplayer.pipextension.simple.SimpleVideoActivity
 import xyz.doikki.videoplayer.pipextension.simple.SimpleVideoListActivity
 
 class SamplePlayActivity : SimpleVideoListActivity(R.layout.sample_video_activity) {
@@ -32,16 +31,6 @@ class SamplePlayActivity : SimpleVideoListActivity(R.layout.sample_video_activit
 
     override fun onAttachVideoToView() {
         videoManager.attachView(findViewById<FrameLayout>(R.id.video), "")
-    }
-
-    override fun onPipComeBackActivity() {
-        startActivity(intent)
-    }
-
-    override fun onVideoPlayPrev() {
-    }
-
-    override fun onVideoPlayNext() {
     }
 
     private fun playVideo(url: String, forceView: Boolean = false) {

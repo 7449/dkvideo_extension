@@ -23,6 +23,8 @@ material = "com.google.android.material:material:1.11.0"
 core = "androidx.core:core-ktx:1.12.0"
 startup = "androidx.startup:startup-runtime:1.1.1"
 
+leak-canary = "com.squareup.leakcanary:leakcanary-android:3.0-alpha-1"
+
 player-java = "xyz.doikki.android.dkplayer:dkplayer-java:3.3.7"
 player-ui = "xyz.doikki.android.dkplayer:dkplayer-ui:3.3.7"
 player-core = "xyz.doikki.android.dkplayer:player-exo:3.3.7"

@@ -24,5 +24,6 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.core)
+    debugImplementation(libs.leak.canary)
     implementation(project(":pipextension"))
 }

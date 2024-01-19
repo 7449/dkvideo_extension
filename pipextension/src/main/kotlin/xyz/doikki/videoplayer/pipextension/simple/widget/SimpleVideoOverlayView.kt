@@ -22,7 +22,7 @@ class SimpleVideoOverlayView @JvmOverloads constructor(
     context: Context, downX: Int = 50, downY: Int = 50,
 ) : FrameLayout(context) {
 
-    private val windowManager = PlayerUtils.getWindowManager(context.applicationContext)
+    private val windowManager = PlayerUtils.getWindowManager(context)
     private val layoutParams = WindowManager.LayoutParams()
     private val downRawPointF = PointF(0f, 0f)
     private val downPoint = Point(downX, downY)
@@ -56,16 +56,16 @@ class SimpleVideoOverlayView @JvmOverloads constructor(
         addView(view)
         if (!isAttachedToWindow) {
             windowManager.addView(this, layoutParams)
-            isOverlay = true
         }
+        isOverlay = true
     }
 
     fun removeFromWindow() {
         removeAllViews()
         if (isAttachedToWindow) {
             windowManager.removeViewImmediate(this)
-            isOverlay = false
         }
+        isOverlay = false
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {

@@ -5,18 +5,16 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import xyz.doikki.videoplayer.pipextension.OnVideoListener
 import xyz.doikki.videoplayer.pipextension.VideoManager
 import xyz.doikki.videoplayer.pipextension.isOverlayPermissions
 import xyz.doikki.videoplayer.pipextension.launchOverlay
 
-abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout),
-    OnVideoListener {
+abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout) {
 
     private val typeOverlayLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK && isOverlayPermissions()) {
-                entryPipMode()
+                switchPipMode()
             }
         }
 
@@ -55,24 +53,7 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout),
         typeOverlayLauncher.unregister()
     }
 
-    override fun onEntryPipMode() {
-        entryPipMode()
-    }
-
-    override fun onPipComeBackActivity() {
-        startActivity(intent)
-    }
-
-    override fun onVideoPlayError() {
-    }
-
-    override fun onVideoPlayNext() {
-    }
-
-    override fun onVideoPlayPrev() {
-    }
-
-    private fun entryPipMode() {
+    fun switchPipMode() {
         if (!isOverlayPermissions()) {
             typeOverlayLauncher.launchOverlay()
         } else {
@@ -81,10 +62,8 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout),
         }
     }
 
-    private fun isComeBackActivity(): Boolean {
-        if (!videoManager.isOverlay) return false
-        videoManager.setVideoListener(this)
-        return videoManager.isPlaying
+    protected open fun isComeBackActivity(): Boolean {
+        return videoManager.isOverlay
     }
 
     protected fun playVideo(
@@ -93,7 +72,6 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout),
         title: String,
         parent: ViewGroup?,
     ) {
-        videoManager.setVideoListener(this)
         videoManager.showAnimView()
         videoManager.attachParent(parent, tag, title)
         videoManager.showVideoView()
@@ -106,7 +84,6 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout),
         parent: ViewGroup?,
         scope: suspend () -> String,
     ) {
-        videoManager.setVideoListener(this)
         videoManager.showAnimView()
         videoManager.attachParent(parent, tag, title)
         val url = scope.invoke()
