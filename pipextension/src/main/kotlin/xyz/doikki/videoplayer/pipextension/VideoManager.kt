@@ -4,11 +4,11 @@ import android.view.ViewGroup
 import xyz.doikki.videoplayer.pipextension.initializer.VideoInitializer
 import xyz.doikki.videoplayer.pipextension.simple.develop.SourceVideoSize
 import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoContainerView
-import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoOverlayView
+import xyz.doikki.videoplayer.pipextension.simple.widget.helper.OverlayHelper
 
 object VideoManager {
 
-    val isOverlay: Boolean get() = videoView.isOverlayParent() && overlayView.isOverlay()
+    val isOverlay: Boolean get() = videoView.isOverlayParent() && OverlayHelper.isOverlay()
     val isPlaying: Boolean get() = videoView.isPlaying()
     val videoTag: String? get() = tag
 
@@ -16,7 +16,6 @@ object VideoManager {
     private var videoListener: OnVideoListener? = null
     private var isPlayList = true
 
-    private val overlayView = SimpleVideoOverlayView(VideoInitializer.appContext)
     private val videoView = SimpleVideoContainerView(VideoInitializer.appContext)
         .buffered { it.refreshVideoSize(SourceVideoSize.BUFFERED) }
         .videoSize { view, _ -> view.refreshVideoSize(SourceVideoSize.VIDEO_SIZE) }
@@ -56,7 +55,7 @@ object VideoManager {
     }
 
     fun attachWindow() {
-        overlayView.addToWindow(videoView.getPipVideo())
+        OverlayHelper.get().addToWindow(videoView.getPipVideo())
         videoView.refreshVideoSize(SourceVideoSize.ATTACH_WINDOW)
     }
 
@@ -67,7 +66,7 @@ object VideoManager {
             videoMatchParams
         )
         videoView.refreshVideoSize(SourceVideoSize.ATTACH_VIEW)
-        overlayView.removeFromWindow()
+        OverlayHelper.removeFromWindow()
     }
 
     fun showAnimView() {
@@ -81,7 +80,7 @@ object VideoManager {
     fun shutDown() {
         videoView.release()
         videoView.removeViewFormParent()
-        overlayView.removeFromWindow()
+        OverlayHelper.release()
         videoListener = null
         tag = null
     }

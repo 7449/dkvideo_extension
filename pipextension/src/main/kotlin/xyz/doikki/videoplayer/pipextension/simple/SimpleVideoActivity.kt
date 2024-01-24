@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import xyz.doikki.videoplayer.pipextension.OnVideoListener
 import xyz.doikki.videoplayer.pipextension.VideoManager
 import xyz.doikki.videoplayer.pipextension.isOverlayPermissions
 import xyz.doikki.videoplayer.pipextension.launchOverlay
@@ -24,8 +25,12 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout) 
         super.onCreate(savedInstanceState)
         onBackPressedDispatcher.addCallback(this, true) {
             if (!videoManager.onBackPressed()) {
-                finish()
+                onBackPressedCallback()
             }
+        }
+        val application = application
+        if (application is OnVideoListener) {
+            VideoManager.setVideoListener(application)
         }
         if (isComeBackActivity()) {
             onAttachVideoToView()
@@ -36,6 +41,10 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout) 
      * 添加至RootView
      */
     abstract fun onAttachVideoToView()
+
+    open fun onBackPressedCallback() {
+        finish()
+    }
 
     override fun onPause() {
         super.onPause()
