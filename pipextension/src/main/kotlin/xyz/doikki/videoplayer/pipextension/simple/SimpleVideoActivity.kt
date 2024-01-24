@@ -53,6 +53,7 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout) 
 
     override fun onResume() {
         super.onResume()
+        VideoManager.isPlayList(false)
         videoManager.onResume()
     }
 

@@ -23,6 +23,8 @@ private const val TYPE_SYSTEM_ALERT_COMPATIBLE = WindowManager.LayoutParams.TYPE
 
 fun ViewGroup.scanActivity(): Activity = PlayerUtils.scanForActivity(context)
 
+fun ViewGroup.scanActivityOrNull(): Activity? = PlayerUtils.scanForActivity(context)
+
 fun Float.dp2px(): Int = PlayerUtils.dp2px(VideoInitializer.appContext, this)
 
 val Context.statusBarHeight: Int get() = PlayerUtils.getStatusBarHeight(this).toInt()
@@ -53,7 +55,9 @@ fun ActivityResultLauncher<Intent>.launchOverlay() {
 fun Activity.fullScreen() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         val controller = window.insetsController
-        controller?.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+        controller?.hide(
+            WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars()
+        )
         controller?.systemBarsBehavior =
             WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     } else {

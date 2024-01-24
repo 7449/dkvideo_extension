@@ -19,7 +19,7 @@ object VideoManager {
     private val videoView = SimpleVideoContainerView(VideoInitializer.appContext)
         .buffered { it.refreshVideoSize(SourceVideoSize.BUFFERED) }
         .videoSize { view, _ -> view.refreshVideoSize(SourceVideoSize.VIDEO_SIZE) }
-        .error { videoListener?.onVideoPlayError() }
+        .error { videoPlayError() }
         .completed {
             if (isPlayList()) {
                 videoPlayNext()
@@ -110,7 +110,7 @@ object VideoManager {
     }
 
     internal fun pipComeBackActivity() {
-        videoListener?.onPipComeBackActivity()
+        videoListener?.onPipComeBackActivity(videoView.parentView())
     }
 
     internal fun entryPipMode() {
@@ -118,11 +118,15 @@ object VideoManager {
     }
 
     internal fun videoPlayNext() {
-        videoListener?.onVideoPlayNext()
+        videoListener?.onVideoPlayNext(videoView.parentView())
     }
 
     internal fun videoPlayPrev() {
-        videoListener?.onVideoPlayPrev()
+        videoListener?.onVideoPlayPrev(videoView.parentView())
+    }
+
+    internal fun videoPlayError() {
+        videoListener?.onVideoPlayError(videoView.parentView())
     }
 
     internal fun refreshRotation() {

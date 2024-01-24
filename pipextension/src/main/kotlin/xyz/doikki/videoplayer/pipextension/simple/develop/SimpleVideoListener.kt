@@ -5,28 +5,28 @@ import xyz.doikki.videoplayer.pipextension.OnVideoListener
 
 class SimpleVideoListener(
     private val switchPipMode: (ViewGroup?) -> Unit = {},
-    private val pipComeBackActivity: () -> Unit = {},
-    private val pipPlayPrev: () -> Unit = {},
-    private val pipPlayNext: () -> Unit = {},
-    private val pipPlayError: () -> Unit = {},
+    private val pipComeBackActivity: (ViewGroup?) -> Unit = {},
+    private val pipPlayPrev: (ViewGroup?) -> Unit = {},
+    private val pipPlayNext: (ViewGroup?) -> Unit = {},
+    private val pipPlayError: (ViewGroup?) -> Unit = {},
 ) : OnVideoListener {
-    override fun onSwitchPipMode(container: ViewGroup?) {
-        switchPipMode(container)
+    override fun onSwitchPipMode(parent: ViewGroup?) {
+        switchPipMode(parent)
     }
 
-    override fun onPipComeBackActivity() {
-        pipComeBackActivity()
+    override fun onPipComeBackActivity(parent: ViewGroup?) {
+        pipComeBackActivity(parent)
     }
 
-    override fun onVideoPlayPrev() {
-        pipPlayPrev()
+    override fun onVideoPlayPrev(parent: ViewGroup?) {
+        pipPlayPrev(parent)
     }
 
-    override fun onVideoPlayNext() {
-        pipPlayNext()
+    override fun onVideoPlayNext(parent: ViewGroup?) {
+        pipPlayNext(parent)
     }
 
-    override fun onVideoPlayError() {
-        pipPlayError()
+    override fun onVideoPlayError(parent: ViewGroup?) {
+        pipPlayError(parent)
     }
 }

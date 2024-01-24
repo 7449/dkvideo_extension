@@ -9,8 +9,8 @@ import xyz.doikki.videoplayer.pipextension.databinding.VideoLayoutPlayContainerB
 import xyz.doikki.videoplayer.pipextension.parentView
 import xyz.doikki.videoplayer.pipextension.simple.develop.SourceVideoSize
 import xyz.doikki.videoplayer.pipextension.simple.widget.helper.ApiHelper
+import xyz.doikki.videoplayer.pipextension.simple.widget.helper.ControllerHelper
 import xyz.doikki.videoplayer.pipextension.simple.widget.helper.ListenerHelper
-import xyz.doikki.videoplayer.pipextension.simple.widget.helper.OriHelper
 import xyz.doikki.videoplayer.pipextension.simple.widget.helper.UIHelper
 
 class SimpleVideoContainerView @JvmOverloads constructor(
@@ -22,8 +22,8 @@ class SimpleVideoContainerView @JvmOverloads constructor(
 
     private val listenerHelper = ListenerHelper(this, viewBinding.videoView)
     private val apiHelper = ApiHelper(viewBinding.progress, viewBinding.videoView)
-    private val uiHelper = UIHelper(this, viewBinding.root, viewBinding.videoView)
-    private val oriHelper = OriHelper(this, viewBinding.videoView)
+    private val controllerHelper = ControllerHelper(this, viewBinding.root, viewBinding.videoView)
+    private val uiHelper = UIHelper(this, viewBinding.videoView)
 
     fun completed(action: (view: SimpleVideoContainerView) -> Unit) = apply {
         listenerHelper.completed(action)
@@ -50,15 +50,15 @@ class SimpleVideoContainerView @JvmOverloads constructor(
     }
 
     fun getPipVideo() = apply {
-        oriHelper.releaseRotation()
-        oriHelper.releaseScreenScale()
-        uiHelper.pipController()
+        uiHelper.releaseRotation()
+        uiHelper.releaseScreenScale()
+        controllerHelper.pipController()
     }
 
     fun getViewVideo(activity: Activity, title: String) = apply {
-        oriHelper.releaseRotation()
-        oriHelper.releaseScreenScale()
-        uiHelper.viewController(activity, title)
+        uiHelper.releaseRotation()
+        uiHelper.releaseScreenScale()
+        controllerHelper.viewController(activity, title)
     }
 
     fun startVideo(url: String) {
@@ -71,8 +71,8 @@ class SimpleVideoContainerView @JvmOverloads constructor(
 
     fun release() {
         apiHelper.release()
-        oriHelper.releaseRotation()
-        oriHelper.releaseScreenScale()
+        uiHelper.releaseRotation()
+        uiHelper.releaseScreenScale()
     }
 
     fun onPause() {
@@ -96,25 +96,25 @@ class SimpleVideoContainerView @JvmOverloads constructor(
     }
 
     fun refreshRotation() {
-        oriHelper.refreshRotation()
+        uiHelper.refreshRotation()
     }
 
     fun refreshScreenScale() {
-        oriHelper.refreshScreenScale()
+        uiHelper.refreshScreenScale()
     }
 
     fun refreshVideoSize(videoSizeChangedType: SourceVideoSize) {
-        oriHelper.refreshVideoSize(videoSizeChangedType)
+        uiHelper.refreshVideoSize(videoSizeChangedType)
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        oriHelper.onAttachedToWindow()
+        uiHelper.onAttachedToWindow()
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        oriHelper.onDetachedFromWindow()
+        uiHelper.onDetachedFromWindow()
     }
 
     fun isOverlayParent(): Boolean {

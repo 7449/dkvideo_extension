@@ -1,30 +1,21 @@
 package xyz.doikki.videoplayer.pipextension.sample
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import xyz.doikki.videoplayer.pipextension.simple.SimpleVideoListActivity
+import xyz.doikki.videoplayer.pipextension.simple.SimpleVideoActivity
 
-class SamplePlayActivity : SimpleVideoListActivity(R.layout.sample_video_activity) {
+class SamplePlayActivity : SimpleVideoActivity(R.layout.sample_video_activity) {
 
-    companion object {
-        private val items = Urls.playList
-    }
-
-    private val adapter = SamplePlayListAdapter(
-        onClick = {
-            playVideo(it, true)
-        },
-        onLongClick = {
-        }
-    )
+    private val adapter = SampleVideoItemAdapter { playVideo(it, true) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        findViewById<View>(R.id.btn_list).setOnClickListener {
+            startActivity(Intent(this, SamplePlayListActivity::class.java))
+        }
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
         recyclerView.adapter = adapter
     }
@@ -38,39 +29,6 @@ class SamplePlayActivity : SimpleVideoListActivity(R.layout.sample_video_activit
             findViewById<FrameLayout>(R.id.video)
         else null
         playVideo(url, url, url, parent)
-    }
-
-    private class SamplePlayListAdapter(
-        private val onClick: (String) -> Unit,
-        private val onLongClick: (String) -> Unit,
-    ) : RecyclerView.Adapter<SamplePlayListAdapter.ViewHolder>() {
-
-        private class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val url: TextView = view.findViewById(R.id.url)
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(
-                LayoutInflater.from(parent.context)
-                    .inflate(R.layout.sample_url_item, parent, false)
-            ).apply {
-                itemView.setOnClickListener {
-                    onClick(items[adapterPosition])
-                }
-                itemView.setOnLongClickListener {
-                    onLongClick(items[adapterPosition])
-                    return@setOnLongClickListener true
-                }
-            }
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.url.text = items[position]
-        }
-
-        override fun getItemCount(): Int {
-            return items.size
-        }
     }
 
 }
