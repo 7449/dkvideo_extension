@@ -42,6 +42,11 @@ class SimpleVideoComponent @JvmOverloads constructor(
             gone()
             startAnimation(anim)
         }
+        if (VideoManager.isPip()) {
+            viewBinding.pip.visible()
+        } else {
+            viewBinding.pip.gone()
+        }
         if (VideoManager.isPlayList()) {
             viewBinding.next.visible()
             viewBinding.prev.visible()

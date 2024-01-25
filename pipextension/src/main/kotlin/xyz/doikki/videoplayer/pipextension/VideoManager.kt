@@ -15,6 +15,7 @@ object VideoManager {
     private var tag: String? = null
     private var videoListener: OnVideoListener? = null
     private var isPlayList = true
+    private var isPip = true
 
     private val videoView = SimpleVideoContainerView(VideoInitializer.appContext)
         .buffered { it.refreshVideoSize(SourceVideoSize.BUFFERED) }
@@ -33,6 +34,10 @@ object VideoManager {
 
     fun isPlayList(playlist: Boolean) = apply {
         this.isPlayList = playlist
+    }
+
+    fun isPip(pip: Boolean) = apply {
+        this.isPip = pip
     }
 
     fun startVideo(url: String) {
@@ -139,6 +144,10 @@ object VideoManager {
 
     internal fun isPlayList(): Boolean {
         return isPlayList
+    }
+
+    internal fun isPip(): Boolean {
+        return isPip
     }
 
 }
