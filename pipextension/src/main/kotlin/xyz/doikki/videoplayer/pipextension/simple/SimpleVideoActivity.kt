@@ -82,8 +82,8 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout) 
         title: String,
         parent: ViewGroup?,
     ) {
-        videoManager.showAnimView()
         videoManager.attachParent(parent, tag, title)
+        videoManager.showAnimView()
         videoManager.showVideoView()
         videoManager.startVideo(url)
     }
@@ -94,8 +94,8 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout) 
         parent: ViewGroup?,
         scope: suspend () -> String,
     ) {
-        videoManager.showAnimView()
         videoManager.attachParent(parent, tag, title)
+        videoManager.showAnimView()
         val url = scope.invoke()
         videoManager.showVideoView()
         videoManager.startVideo(url)
