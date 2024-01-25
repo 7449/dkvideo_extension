@@ -9,11 +9,16 @@ import xyz.doikki.videocontroller.component.GestureView
 import xyz.doikki.videocontroller.component.PrepareView
 import xyz.doikki.videocontroller.component.TitleView
 import xyz.doikki.videocontroller.component.VodControlView
+import xyz.doikki.videoplayer.pipextension.gone
+import xyz.doikki.videoplayer.pipextension.simple.widget.component.SimpleAnimComponent
 import xyz.doikki.videoplayer.pipextension.simple.widget.component.SimpleVideoComponent
+import xyz.doikki.videoplayer.pipextension.visible
 
 class SimpleViewController @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
 ) : StandardVideoController(context, attrs, defStyleAttr) {
+
+    private val animComponent = SimpleAnimComponent(context)
 
     fun addControlComponents(title: String) {
         addDefaultControlComponent(title, false)
@@ -32,10 +37,26 @@ class SimpleViewController @JvmOverloads constructor(
         prepareView.setClickStart()
         titleView.setTitle(title)
 
-        addControlComponent(completeView, errorView, prepareView, titleView, vodView, gestureView)
+        addControlComponent(
+            completeView,
+            errorView,
+            prepareView,
+            titleView,
+            vodView,
+            gestureView,
+            animComponent
+        )
         setCanChangePosition(!isLive)
         setEnableInNormal(true)
 
+    }
+
+    fun showAnim() {
+        animComponent.visible()
+    }
+
+    fun hideAnim() {
+        animComponent.gone()
     }
 
 }

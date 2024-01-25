@@ -21,7 +21,7 @@ class SimpleVideoContainerView @JvmOverloads constructor(
         VideoLayoutPlayContainerBinding.inflate(LayoutInflater.from(context), this, true)
 
     private val listenerHelper = ListenerHelper(this, viewBinding.videoView)
-    private val apiHelper = ApiHelper(viewBinding.progress, viewBinding.videoView)
+    private val apiHelper = ApiHelper(viewBinding.videoView)
     private val controllerHelper = ControllerHelper(this, viewBinding.root, viewBinding.videoView)
     private val uiHelper = UIHelper(this, viewBinding.videoView)
 

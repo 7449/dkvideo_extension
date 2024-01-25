@@ -1,11 +1,8 @@
 package xyz.doikki.videoplayer.pipextension.simple.widget.helper
 
-import android.view.View
-import xyz.doikki.videoplayer.pipextension.gone
 import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoView
-import xyz.doikki.videoplayer.pipextension.visible
 
-class ApiHelper(private val animView: View, private val videoView: SimpleVideoView) {
+class ApiHelper(private val videoView: SimpleVideoView) {
 
     fun startVideo(url: String) {
         videoView.revertSize()
@@ -36,13 +33,11 @@ class ApiHelper(private val animView: View, private val videoView: SimpleVideoVi
     }
 
     fun showAnimView() {
-        videoView.gone()
-        animView.visible()
+        videoView.showAnim()
     }
 
     fun showVideoView() {
-        videoView.visible()
-        animView.gone()
+        videoView.hideAnim()
     }
 
 }

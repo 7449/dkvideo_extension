@@ -2,6 +2,8 @@ package xyz.doikki.videoplayer.pipextension.simple.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import xyz.doikki.videoplayer.pipextension.simple.widget.controller.SimplePipController
+import xyz.doikki.videoplayer.pipextension.simple.widget.controller.SimpleViewController
 import xyz.doikki.videoplayer.player.VideoView
 
 class SimpleVideoView @JvmOverloads constructor(
@@ -22,6 +24,24 @@ class SimpleVideoView @JvmOverloads constructor(
 
     fun revertSize() {
         mVideoSize = intArrayOf(0, 0)
+    }
+
+    fun showAnim() {
+        val controller = mVideoController ?: return
+        if (controller is SimplePipController) {
+            controller.showAnim()
+        } else if (controller is SimpleViewController) {
+            controller.showAnim()
+        }
+    }
+
+    fun hideAnim() {
+        val controller = mVideoController ?: return
+        if (controller is SimplePipController) {
+            controller.hideAnim()
+        } else if (controller is SimpleViewController) {
+            controller.hideAnim()
+        }
     }
 
     fun setOnVideoSizeChangedListener(listener: OnVideoSizeChangedListener) {
