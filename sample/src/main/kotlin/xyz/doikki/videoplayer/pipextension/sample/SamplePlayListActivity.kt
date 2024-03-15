@@ -8,7 +8,6 @@ class SamplePlayListActivity : SimpleVideoListActivity() {
 
     private val adapter = SampleVideoItemAdapter {
         playVideo(it, true)
-        closeDraw()
     }
 
     override fun onAttachVideoToView() {

@@ -1,47 +1,35 @@
 package xyz.doikki.videoplayer.pipextension.simple
 
-import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.View
-import androidx.core.os.postDelayed
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
+import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
 import xyz.doikki.videoplayer.pipextension.R
 import xyz.doikki.videoplayer.pipextension.VideoManager
-import xyz.doikki.videoplayer.pipextension.fullScreen
 
 abstract class SimpleVideoListActivity :
     SimpleVideoActivity(R.layout.video_layout_play_list_activity) {
 
-    private val handler = Handler(Looper.getMainLooper())
-    private val draw by lazy { findViewById<DrawerLayout>(R.id.draw) }
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.recyclerview) }
+    private val toolbar by lazy { findViewById<MaterialToolbar>(R.id.toolbar) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fullScreen()
-        findViewById<View>(R.id.draw_open).setOnClickListener { draw.openDrawer(GravityCompat.END) }
+        toolbar.title = "视频播放"
+        toolbar.setTitleTextColor(Color.WHITE)
+        toolbar.setNavigationIconTint(Color.WHITE)
         recyclerView.adapter = createPlayListAdapter()
+        setSupportActionBar(toolbar)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        handler.postDelayed(200) { fullScreen() }
-    }
-
-    override fun onBackPressedCallback() {
-        if (draw.isDrawerOpen(GravityCompat.END)) {
-            closeDraw()
-        } else {
-            super.onBackPressedCallback()
-        }
-    }
-
-    protected fun closeDraw() {
-        draw.closeDrawers()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == android.R.id.home) {
+            finish()
+            true
+        } else super.onOptionsItemSelected(item)
     }
 
     protected abstract fun createPlayListAdapter(): RecyclerView.Adapter<*>
