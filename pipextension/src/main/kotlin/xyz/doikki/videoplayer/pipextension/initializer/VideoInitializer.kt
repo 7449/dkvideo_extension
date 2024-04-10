@@ -2,28 +2,21 @@ package xyz.doikki.videoplayer.pipextension.initializer
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.startup.Initializer
 import xyz.doikki.videoplayer.exo.ExoMediaPlayerFactory
 import xyz.doikki.videoplayer.pipextension.VideoManager
 import xyz.doikki.videoplayer.player.ProgressManager
 import xyz.doikki.videoplayer.player.VideoViewConfig
 import xyz.doikki.videoplayer.player.VideoViewManager
 
-class VideoInitializer : Initializer<Unit> {
+@SuppressLint("StaticFieldLeak")
+object VideoInitializer {
 
-    companion object {
-        @SuppressLint("StaticFieldLeak")
-        private lateinit var _context: Context
-        val appContext get() = _context
-    }
+    private lateinit var _context: Context
+    val appContext get() = _context
 
-    override fun create(context: Context) {
-        _context = context
+    fun initializer(context: Context) {
+        _context = context.applicationContext
         createVideo()
-    }
-
-    override fun dependencies(): List<Class<out Initializer<*>>> {
-        return emptyList()
     }
 
     private fun createVideo() {

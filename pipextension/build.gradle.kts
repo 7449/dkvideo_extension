@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.kotlin)
 }
 android {
     compileSdk = libs.versions.compileSdk.get().toInt()
@@ -17,8 +17,10 @@ android {
     }
 }
 dependencies {
-    implementation(libs.material)
-    implementation(libs.startup)
+    implementation(libs.appcompat)
+    implementation(libs.card)
+    implementation(libs.recyclerview)
+    implementation(libs.constraintlayout)
     implementation(libs.player.java)
     implementation(libs.player.ui)
     implementation(libs.player.cache)

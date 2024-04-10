@@ -5,10 +5,16 @@ import android.content.Intent
 import android.view.ViewGroup
 import android.widget.Toast
 import xyz.doikki.videoplayer.pipextension.OnVideoListener
+import xyz.doikki.videoplayer.pipextension.initializer.VideoInitializer
 import xyz.doikki.videoplayer.pipextension.scanActivity
 import xyz.doikki.videoplayer.pipextension.simple.SimpleVideoActivity
 
 class SampleApplication : Application(), OnVideoListener {
+
+    override fun onCreate() {
+        super.onCreate()
+        VideoInitializer.initializer(this)
+    }
 
     override fun onSwitchPipMode(parent: ViewGroup?) {
         val viewGroup = parent ?: return

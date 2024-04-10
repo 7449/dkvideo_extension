@@ -2,7 +2,7 @@ package xyz.doikki.videoplayer.pipextension.simple
 
 import android.os.Bundle
 import android.view.ViewGroup
-import androidx.activity.addCallback
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import xyz.doikki.videoplayer.pipextension.OnVideoListener
@@ -23,11 +23,13 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout) 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        onBackPressedDispatcher.addCallback(this, true) {
-            if (!videoManager.onBackPressed()) {
-                onBackPressedCallback()
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (!videoManager.onBackPressed()) {
+                    onBackPressedCallback()
+                }
             }
-        }
+        })
         val application = application
         if (application is OnVideoListener) {
             VideoManager.setVideoListener(application)

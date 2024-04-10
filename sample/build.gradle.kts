@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.kotlin)
 }
 android {
     compileSdk = libs.versions.compileSdk.get().toInt()
@@ -22,8 +22,9 @@ android {
 }
 dependencies {
     implementation(libs.appcompat)
-    implementation(libs.material)
-    implementation(libs.core)
+    implementation(libs.recyclerview)
+    implementation(libs.constraintlayout)
+    implementation(libs.card)
     debugImplementation(libs.leak.canary)
     implementation(project(":pipextension"))
 }

@@ -22,7 +22,7 @@ class SampleVideoItemAdapter(private val onClick: (String) -> Unit) :
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.sample_url_item, parent, false)
         ).apply {
-            itemView.setOnClickListener { onClick(items[adapterPosition]) }
+            itemView.setOnClickListener { onClick(items[bindingAdapterPosition]) }
         }
     }
 
