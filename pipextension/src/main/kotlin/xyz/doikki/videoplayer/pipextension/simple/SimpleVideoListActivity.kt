@@ -12,7 +12,7 @@ abstract class SimpleVideoListActivity :
     SimpleVideoActivity(R.layout.video_layout_play_list_activity) {
 
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.recyclerview) }
-    private val toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
+    protected val toolbar: Toolbar by lazy { findViewById(R.id.toolbar) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

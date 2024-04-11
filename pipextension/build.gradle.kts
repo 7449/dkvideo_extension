@@ -17,10 +17,5 @@ android {
     }
 }
 dependencies {
-    implementation(libs.appcompat)
-    implementation(libs.recyclerview)
-    implementation(libs.player.java)
-    implementation(libs.player.ui)
-    implementation(libs.player.cache)
-    implementation(libs.player.core)
+    implementation(libs.bundles.video)
 }
