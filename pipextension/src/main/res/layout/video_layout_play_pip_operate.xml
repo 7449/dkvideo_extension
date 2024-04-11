@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,86 +9,94 @@
         android:id="@+id/start"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_centerInParent="true"
         android:background="@drawable/video_shape_play_start_bg"
         android:padding="10dp"
-        android:src="@drawable/video_selector_play_start"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/video_selector_play_start" />
 
     <ProgressBar
         android:id="@+id/loading"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:indeterminateDrawable="@drawable/video_shape_play_progress"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_centerInParent="true"
+        android:indeterminateDrawable="@drawable/video_shape_play_progress" />
 
     <ImageView
         android:id="@+id/close"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:layout_alignParentRight="true"
         android:layout_margin="5dp"
         android:padding="5dp"
-        android:src="@drawable/video_icon_play_close"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/video_icon_play_close" />
 
     <ImageView
         android:id="@+id/restore"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:layout_alignParentLeft="true"
         android:layout_margin="5dp"
         android:padding="5dp"
-        android:src="@drawable/video_icon_play_full"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/video_icon_play_full" />
 
     <ImageView
         android:id="@+id/prev"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:layout_marginStart="5dp"
         android:padding="5dp"
-        android:src="@drawable/video_icon_play_prev"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/video_icon_play_prev" />
 
     <ImageView
         android:id="@+id/next"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_marginEnd="5dp"
         android:padding="5dp"
-        android:src="@drawable/video_icon_play_next"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/video_icon_play_next" />
 
-    <ImageView
-        android:id="@+id/rotation"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="5dp"
-        android:padding="5dp"
-        android:src="@drawable/video_icon_play_rotation"
-        app:layout_constraintEnd_toStartOf="@id/scale"
-        app:layout_constraintStart_toEndOf="@id/restore"
-        app:layout_constraintTop_toTopOf="parent" />
+    <Space
+        android:id="@+id/center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerHorizontal="true" />
 
-    <ImageView
-        android:id="@+id/scale"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="5dp"
-        android:padding="5dp"
-        android:src="@drawable/video_icon_play_scale"
-        app:layout_constraintEnd_toStartOf="@id/close"
-        app:layout_constraintStart_toEndOf="@id/rotation"
-        app:layout_constraintTop_toTopOf="parent" />
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/center"
+        android:layout_toRightOf="@+id/restore">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/rotation"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:padding="5dp"
+            android:src="@drawable/video_icon_play_rotation" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/close"
+        android:layout_toRightOf="@+id/center">
+
+        <ImageView
+            android:id="@+id/scale"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:padding="5dp"
+            android:src="@drawable/video_icon_play_scale" />
+
+    </FrameLayout>
+
+</RelativeLayout>

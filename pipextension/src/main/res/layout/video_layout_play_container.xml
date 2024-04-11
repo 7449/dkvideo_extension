@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/video_root"
+<xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/video_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="0dp">
-
-    <xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoView
-        android:id="@+id/video_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/black" />
-
-</androidx.cardview.widget.CardView>
+    android:background="@android:color/black" />

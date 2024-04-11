@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black">
@@ -9,26 +8,25 @@
         android:id="@+id/close"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:layout_alignParentRight="true"
         android:layout_margin="5dp"
         android:padding="5dp"
-        android:src="@drawable/video_icon_play_close"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/video_icon_play_close" />
 
     <ImageView
         android:id="@+id/restore"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:layout_alignParentLeft="true"
         android:layout_margin="5dp"
         android:padding="5dp"
-        android:src="@drawable/video_icon_play_full"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/video_icon_play_full" />
 
     <TextView
         android:id="@+id/retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:background="@drawable/dkplayer_shape_status_view_btn"
         android:gravity="center"
         android:paddingLeft="20dp"
@@ -37,32 +35,26 @@
         android:paddingBottom="5dp"
         android:text="@string/dkplayer_retry"
         android:textColor="@android:color/white"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="12sp" />
 
     <ImageView
         android:id="@+id/prev"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:layout_marginStart="5dp"
         android:padding="5dp"
-        android:src="@drawable/video_icon_play_prev"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/video_icon_play_prev" />
 
     <ImageView
         android:id="@+id/next"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_marginEnd="5dp"
         android:padding="5dp"
-        android:src="@drawable/video_icon_play_next"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/video_icon_play_next" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

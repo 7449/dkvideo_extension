@@ -23,8 +23,6 @@ android {
 dependencies {
     implementation(libs.appcompat)
     implementation(libs.recyclerview)
-    implementation(libs.constraintlayout)
-    implementation(libs.card)
     debugImplementation(libs.leak.canary)
     implementation(project(":pipextension"))
 }

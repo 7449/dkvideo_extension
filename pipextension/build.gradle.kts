@@ -18,9 +18,7 @@ android {
 }
 dependencies {
     implementation(libs.appcompat)
-    implementation(libs.card)
     implementation(libs.recyclerview)
-    implementation(libs.constraintlayout)
     implementation(libs.player.java)
     implementation(libs.player.ui)
     implementation(libs.player.cache)
