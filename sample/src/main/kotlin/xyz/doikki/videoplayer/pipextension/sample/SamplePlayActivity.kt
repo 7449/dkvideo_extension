@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
-import xyz.doikki.videoplayer.pipextension.simple.SimpleVideoActivity
+import xyz.doikki.videoplayer.pipextension.simple.ui.SimpleVideoActivity
 
 class SamplePlayActivity : SimpleVideoActivity(R.layout.sample_video_activity) {
 

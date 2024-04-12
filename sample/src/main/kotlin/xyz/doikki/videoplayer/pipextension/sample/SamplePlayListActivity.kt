@@ -1,13 +1,22 @@
 package xyz.doikki.videoplayer.pipextension.sample
 
+import android.graphics.Color
+import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
-import xyz.doikki.videoplayer.pipextension.simple.SimpleVideoListActivity
+import xyz.doikki.videoplayer.pipextension.simple.ui.SimpleVideoListActivity
 
 class SamplePlayListActivity : SimpleVideoListActivity() {
 
     private val adapter = SampleVideoItemAdapter {
         playVideo(it, true)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        window.statusBarColor = Color.BLACK
+        toolbar.setBackgroundColor(Color.BLACK)
+        toolbar.navigationIcon?.setTint(Color.WHITE)
     }
 
     override fun onAttachVideoToView() {

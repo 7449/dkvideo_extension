@@ -7,7 +7,7 @@ import android.widget.Toast
 import xyz.doikki.videoplayer.pipextension.OnVideoListener
 import xyz.doikki.videoplayer.pipextension.initializer.VideoInitializer
 import xyz.doikki.videoplayer.pipextension.scanActivity
-import xyz.doikki.videoplayer.pipextension.simple.SimpleVideoActivity
+import xyz.doikki.videoplayer.pipextension.simple.ui.SimpleVideoActivity
 
 class SampleApplication : Application(), OnVideoListener {
 

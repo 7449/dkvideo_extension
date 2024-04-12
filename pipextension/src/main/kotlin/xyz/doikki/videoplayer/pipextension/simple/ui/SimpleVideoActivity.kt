@@ -1,4 +1,4 @@
-package xyz.doikki.videoplayer.pipextension.simple
+package xyz.doikki.videoplayer.pipextension.simple.ui
 
 import android.os.Bundle
 import android.view.ViewGroup

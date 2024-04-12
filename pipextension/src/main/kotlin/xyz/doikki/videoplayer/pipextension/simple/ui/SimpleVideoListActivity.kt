@@ -1,4 +1,4 @@
-package xyz.doikki.videoplayer.pipextension.simple
+package xyz.doikki.videoplayer.pipextension.simple.ui
 
 import android.graphics.Color
 import android.os.Bundle
@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import xyz.doikki.videoplayer.pipextension.R
 import xyz.doikki.videoplayer.pipextension.VideoManager
+import xyz.doikki.videoplayer.pipextension.simple.ui.SimpleVideoActivity
 
 abstract class SimpleVideoListActivity :
     SimpleVideoActivity(R.layout.video_layout_play_list_activity) {
