@@ -19,7 +19,7 @@ import xyz.doikki.videoplayer.pipextension.scanActivityOrNull
 
 data class MultiVideoItem(
     val cover: Any,
-    val placeCover: Int,
+    val placeholder: Int,
     val title: String,
     val tag: String,
     val videoUrl: ((String) -> Unit) -> Unit,
@@ -60,8 +60,8 @@ class MultiVideoPlayItemAdapter(private val onClick: (MultiVideoItem) -> Unit) :
         holder.binding.text.text = model.title
         holder.binding.container.setBackgroundColor(if (model.select) Color.GRAY else Color.WHITE)
         holder.binding.cover.load(model.cover) {
-            placeholder(model.placeCover)
-            error(model.placeCover)
+            placeholder(model.placeholder)
+            error(model.placeholder)
         }
     }
 
