@@ -8,9 +8,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
 import xyz.doikki.videoplayer.pipextension.OnVideoListener
 import xyz.doikki.videoplayer.pipextension.R
 import xyz.doikki.videoplayer.pipextension.VideoManager
@@ -60,20 +59,10 @@ class MultiVideoPlayItemAdapter(private val onClick: (MultiVideoItem) -> Unit) :
         val model = multiVideoItems[position]
         holder.binding.text.text = model.title
         holder.binding.container.setBackgroundColor(if (model.select) Color.GRAY else Color.WHITE)
-        holder.binding.cover.load(model.cover, model.placeCover, model.placeCover)
-    }
-
-    private fun ImageView.load(
-        url: Any,
-        placeHolder: Int = -1,
-        errorHolder: Int = -1,
-    ) {
-        Glide.with(context)
-            .load(url)
-            .centerCrop()
-            .placeholder(placeHolder)
-            .error(errorHolder)
-            .into(this)
+        holder.binding.cover.load(model.cover) {
+            placeholder(model.placeCover)
+            error(model.placeCover)
+        }
     }
 
     override fun getItemCount(): Int {
