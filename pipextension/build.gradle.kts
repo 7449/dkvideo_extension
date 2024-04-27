@@ -5,7 +5,7 @@ plugins {
 android {
     compileSdk = libs.versions.compileSdk.get().toInt()
     namespace = "xyz.doikki.videoplayer.pipextension"
-    defaultConfig { minSdk = 19 }
+    defaultConfig { minSdk = libs.versions.minSdk.get().toInt() }
     buildFeatures.viewBinding = true
     buildTypes { release { isMinifyEnabled = false } }
     compileOptions {
