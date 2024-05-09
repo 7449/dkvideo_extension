@@ -83,24 +83,26 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout) 
         tag: String,
         title: String,
         parent: ViewGroup?,
+        header: Map<String, String> = emptyMap(),
     ) {
         videoManager.attachParent(parent, tag, title)
         videoManager.showAnimView()
         videoManager.showVideoView()
-        videoManager.startVideo(url)
+        videoManager.startVideo(url, header)
     }
 
     protected suspend fun playVideo(
         tag: String,
         title: String,
         parent: ViewGroup?,
+        header: Map<String, String> = emptyMap(),
         scope: suspend () -> String,
     ) {
         videoManager.attachParent(parent, tag, title)
         videoManager.showAnimView()
         val url = scope.invoke()
         videoManager.showVideoView()
-        videoManager.startVideo(url)
+        videoManager.startVideo(url, header)
     }
 
 }

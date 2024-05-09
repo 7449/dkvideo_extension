@@ -2,8 +2,8 @@ package xyz.doikki.videoplayer.pipextension.initializer
 
 import android.annotation.SuppressLint
 import android.content.Context
-import xyz.doikki.videoplayer.exo.ExoMediaPlayerFactory
 import xyz.doikki.videoplayer.pipextension.VideoManager
+import xyz.doikki.videoplayer.pipextension.exo.ExoMediaPlayerFactory
 import xyz.doikki.videoplayer.player.ProgressManager
 import xyz.doikki.videoplayer.player.VideoViewConfig
 import xyz.doikki.videoplayer.player.VideoViewManager

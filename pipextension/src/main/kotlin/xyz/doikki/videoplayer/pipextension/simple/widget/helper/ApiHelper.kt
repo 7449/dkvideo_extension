@@ -4,9 +4,9 @@ import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoView
 
 class ApiHelper(private val videoView: SimpleVideoView) {
 
-    fun startVideo(url: String) {
+    fun startVideo(url: String, header: Map<String, String>) {
         videoView.revertSize()
-        videoView.setUrl(url)
+        videoView.setUrl(url, header)
         videoView.start()
     }
 

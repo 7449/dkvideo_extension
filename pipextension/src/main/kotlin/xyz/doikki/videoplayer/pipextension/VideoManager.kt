@@ -40,13 +40,19 @@ object VideoManager {
         this.isPip = pip
     }
 
-    fun startVideo(url: String) {
-        videoView.startVideo(url)
+    fun startVideo(url: String, header: Map<String, String> = emptyMap()) {
+        videoView.startVideo(url, header)
     }
 
-    fun startVideo(container: ViewGroup?, tag: String, title: String, url: String) {
+    fun startVideo(
+        container: ViewGroup?,
+        tag: String,
+        title: String,
+        url: String,
+        header: Map<String, String> = emptyMap(),
+    ) {
         attachParent(container, tag, title)
-        startVideo(url)
+        startVideo(url, header)
     }
 
     fun attachParent(container: ViewGroup?, tag: String, title: String) {

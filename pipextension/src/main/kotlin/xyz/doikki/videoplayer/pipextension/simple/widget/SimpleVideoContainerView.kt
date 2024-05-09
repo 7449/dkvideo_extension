@@ -61,8 +61,8 @@ class SimpleVideoContainerView @JvmOverloads constructor(
         controllerHelper.viewController(activity, title)
     }
 
-    fun startVideo(url: String) {
-        apiHelper.startVideo(url)
+    fun startVideo(url: String, header: Map<String, String>) {
+        apiHelper.startVideo(url, header)
     }
 
     fun isPlaying(): Boolean {
