@@ -3,7 +3,7 @@ package xyz.doikki.videoplayer.pipextension.initializer
 import android.annotation.SuppressLint
 import android.content.Context
 import xyz.doikki.videoplayer.pipextension.VideoManager
-import xyz.doikki.videoplayer.pipextension.exo.ExoMediaPlayerFactory
+import xyz.doikki.videoplayer.pipextension.media3.Media3ExoFactory
 import xyz.doikki.videoplayer.player.ProgressManager
 import xyz.doikki.videoplayer.player.VideoViewConfig
 import xyz.doikki.videoplayer.player.VideoViewManager
@@ -22,7 +22,7 @@ object VideoInitializer {
     private fun createVideo() {
         VideoViewManager.setConfig(
             VideoViewConfig.newBuilder()
-                .setPlayerFactory(ExoMediaPlayerFactory.create())
+                .setPlayerFactory(Media3ExoFactory.create())
                 .setProgressManager(VideoTagProgressManager())
                 .build()
         )

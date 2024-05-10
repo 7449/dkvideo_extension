@@ -17,13 +17,15 @@ class SingleVideoPlayActivity : SimpleVideoActivity(R.layout.video_layout_play_a
     companion object {
         private const val URL = "URL"
         private const val TITLE = "TITLE"
-        fun start(context: Context, url: String, title: String) {
+        private const val HEADER = "HEADER"
+        fun start(context: Context, url: String, title: String, header: Bundle = Bundle.EMPTY) {
             context.startActivity(Intent(context, SingleVideoPlayActivity::class.java).apply {
                 if (context !is Activity) {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
                 putExtra(URL, url)
                 putExtra(TITLE, title)
+                putExtra(HEADER, header)
             })
         }
     }
@@ -31,11 +33,18 @@ class SingleVideoPlayActivity : SimpleVideoActivity(R.layout.video_layout_play_a
     private val handler = Handler(Looper.getMainLooper())
     private val title by lazy { intent.getStringExtra(TITLE).orEmpty() }
     private val url by lazy { intent.getStringExtra(URL).orEmpty() }
+    private val header by lazy { intent.getBundleExtra(HEADER) ?: Bundle.EMPTY }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fullScreen()
-        playVideo(url, url, url, findViewById<FrameLayout>(R.id.video))
+        playVideo(
+            url,
+            url,
+            url,
+            findViewById<FrameLayout>(R.id.video),
+            header = bundleToMap(header)
+        )
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -50,6 +59,16 @@ class SingleVideoPlayActivity : SimpleVideoActivity(R.layout.video_layout_play_a
 
     override fun onAttachVideoToView() {
         videoManager.attachView(findViewById<FrameLayout>(R.id.video), title)
+    }
+
+    private fun bundleToMap(bundle: Bundle): Map<String, String> {
+        val map = mutableMapOf<String, String>()
+        for (key in bundle.keySet()) {
+            @Suppress("DEPRECATION")
+            val value = bundle.get(key)
+            map[key] = value.toString()
+        }
+        return map
     }
 
 }
