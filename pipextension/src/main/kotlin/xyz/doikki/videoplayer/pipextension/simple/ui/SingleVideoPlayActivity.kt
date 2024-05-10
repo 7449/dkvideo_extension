@@ -7,10 +7,14 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.os.postDelayed
+import xyz.doikki.videoplayer.pipextension.OnVideoListener
 import xyz.doikki.videoplayer.pipextension.R
+import xyz.doikki.videoplayer.pipextension.VideoManager
 import xyz.doikki.videoplayer.pipextension.fullScreen
+import xyz.doikki.videoplayer.pipextension.scanActivityOrNull
 
 class SingleVideoPlayActivity : SimpleVideoActivity(R.layout.video_layout_play_activity_single) {
 
@@ -38,10 +42,11 @@ class SingleVideoPlayActivity : SimpleVideoActivity(R.layout.video_layout_play_a
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fullScreen()
+        VideoManager.setVideoListener(SimpleSingleVideoListener)
         playVideo(
             url,
             url,
-            url,
+            title,
             findViewById<FrameLayout>(R.id.video),
             header = bundleToMap(header)
         )
@@ -54,7 +59,7 @@ class SingleVideoPlayActivity : SimpleVideoActivity(R.layout.video_layout_play_a
 
     override fun onResume() {
         super.onResume()
-        videoManager.isPlayList(false).isPip(false)
+        videoManager.isPlayList(false).isPip(true)
     }
 
     override fun onAttachVideoToView() {
@@ -69,6 +74,32 @@ class SingleVideoPlayActivity : SimpleVideoActivity(R.layout.video_layout_play_a
             map[key] = value.toString()
         }
         return map
+    }
+
+    private object SimpleSingleVideoListener : OnVideoListener {
+        override fun onSwitchPipMode(parent: ViewGroup?) {
+            val viewGroup = parent ?: return
+            val scanActivity = viewGroup.scanActivityOrNull()
+            if (scanActivity is SimpleVideoActivity) {
+                scanActivity.switchPipMode()
+            }
+        }
+
+        override fun onPipComeBackActivity(parent: ViewGroup?) {
+            //ignore
+        }
+
+        override fun onVideoPlayPrev(parent: ViewGroup?) {
+            //ignore
+        }
+
+        override fun onVideoPlayNext(parent: ViewGroup?) {
+            //ignore
+        }
+
+        override fun onVideoPlayError(parent: ViewGroup?) {
+            //ignore
+        }
     }
 
 }

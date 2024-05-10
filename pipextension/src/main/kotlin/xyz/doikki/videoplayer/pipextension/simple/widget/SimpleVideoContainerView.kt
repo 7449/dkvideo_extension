@@ -22,7 +22,7 @@ class SimpleVideoContainerView @JvmOverloads constructor(
 
     private val listenerHelper = ListenerHelper(this, viewBinding.videoView)
     private val apiHelper = ApiHelper(viewBinding.videoView)
-    private val controllerHelper = ControllerHelper(this, viewBinding.videoView)
+    private val controllerHelper = ControllerHelper(this, viewBinding.root, viewBinding.videoView)
     private val uiHelper = UIHelper(this, viewBinding.videoView)
 
     fun completed(action: (view: SimpleVideoContainerView) -> Unit) = apply {
