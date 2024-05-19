@@ -24,7 +24,7 @@ import xyz.doikki.videoplayer.player.AbstractPlayer
 import xyz.doikki.videoplayer.player.VideoViewManager
 
 @UnstableApi
-class Media3Exo(context: Context) : AbstractPlayer(), Player.Listener {
+internal class Media3Exo(context: Context) : AbstractPlayer(), Player.Listener {
 
     private val application = context.applicationContext
 

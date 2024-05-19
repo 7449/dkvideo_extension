@@ -2,7 +2,7 @@ package xyz.doikki.videoplayer.pipextension.simple.develop
 
 import xyz.doikki.videoplayer.player.BaseVideoView
 
-enum class SimpleVideoState(val state: Int) {
+internal enum class SimpleVideoState(val state: Int) {
     ERROR(BaseVideoView.STATE_ERROR),
     IDLE(BaseVideoView.STATE_IDLE),
     PREPARING(BaseVideoView.STATE_PREPARING),

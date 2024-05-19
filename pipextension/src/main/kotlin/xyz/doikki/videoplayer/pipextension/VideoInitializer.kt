@@ -1,8 +1,7 @@
-package xyz.doikki.videoplayer.pipextension.initializer
+package xyz.doikki.videoplayer.pipextension
 
 import android.annotation.SuppressLint
 import android.content.Context
-import xyz.doikki.videoplayer.pipextension.VideoManager
 import xyz.doikki.videoplayer.pipextension.media3.Media3ExoFactory
 import xyz.doikki.videoplayer.player.ProgressManager
 import xyz.doikki.videoplayer.player.VideoViewConfig
@@ -39,12 +38,13 @@ object VideoInitializer {
         }
 
         override fun saveProgress(url: String, progress: Long) {
-            if (VideoManager.videoTag.isNullOrBlank()) return
-            progressSp.edit().putLong(VideoManager.videoTag, progress).apply()
+            val item = selectVideoItem ?: return
+            progressSp.edit().putLong(item.key, progress).apply()
         }
 
         override fun getSavedProgress(url: String): Long {
-            return progressSp.getLong(VideoManager.videoTag, 0)
+            val item = selectVideoItem ?: return 0
+            return progressSp.getLong(item.key, 0)
         }
 
     }

@@ -1,14 +1,12 @@
 package xyz.doikki.videoplayer.pipextension.simple.ui
 
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import xyz.doikki.videoplayer.pipextension.OnVideoListener
 import xyz.doikki.videoplayer.pipextension.VideoManager
 import xyz.doikki.videoplayer.pipextension.isOverlayPermissions
-import xyz.doikki.videoplayer.pipextension.launchOverlay
+import xyz.doikki.videoplayer.pipextension.overlayLaunch
 
 abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout) {
 
@@ -19,7 +17,7 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout) 
             }
         }
 
-    protected val videoManager = VideoManager
+    private val videoManager = VideoManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,19 +28,7 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout) 
                 }
             }
         })
-        val application = application
-        if (application is OnVideoListener) {
-            VideoManager.setVideoListener(application)
-        }
-        if (isComeBackActivity()) {
-            onAttachVideoToView()
-        }
     }
-
-    /**
-     * 添加至RootView
-     */
-    abstract fun onAttachVideoToView()
 
     open fun onBackPressedCallback() {
         finish()
@@ -55,7 +41,6 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout) 
 
     override fun onResume() {
         super.onResume()
-        VideoManager.isPlayList(false)
         videoManager.onResume()
     }
 
@@ -67,42 +52,11 @@ abstract class SimpleVideoActivity(layout: Int = 0) : AppCompatActivity(layout) 
 
     fun switchPipMode() {
         if (!isOverlayPermissions()) {
-            typeOverlayLauncher.launchOverlay()
+            typeOverlayLauncher.overlayLaunch()
         } else {
-            videoManager.attachWindow()
+            videoManager.attachParent(release = false)
             finish()
         }
-    }
-
-    protected open fun isComeBackActivity(): Boolean {
-        return videoManager.isOverlay
-    }
-
-    protected fun playVideo(
-        url: String,
-        tag: String,
-        title: String,
-        parent: ViewGroup?,
-        header: Map<String, String> = emptyMap(),
-    ) {
-        videoManager.attachParent(parent, tag, title)
-        videoManager.showAnimView()
-        videoManager.showVideoView()
-        videoManager.startVideo(url, header)
-    }
-
-    protected suspend fun playVideo(
-        tag: String,
-        title: String,
-        parent: ViewGroup?,
-        header: Map<String, String> = emptyMap(),
-        scope: suspend () -> String,
-    ) {
-        videoManager.attachParent(parent, tag, title)
-        videoManager.showAnimView()
-        val url = scope.invoke()
-        videoManager.showVideoView()
-        videoManager.startVideo(url, header)
     }
 
 }

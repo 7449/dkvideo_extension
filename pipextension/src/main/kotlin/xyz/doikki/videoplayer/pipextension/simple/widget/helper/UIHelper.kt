@@ -6,20 +6,15 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.view.updateLayoutParams
 import xyz.doikki.videoplayer.controller.OrientationHelper
-import xyz.doikki.videoplayer.pipextension.VideoManager
-import xyz.doikki.videoplayer.pipextension.dp2px
+import xyz.doikki.videoplayer.pipextension.dp
 import xyz.doikki.videoplayer.pipextension.isLandscape
 import xyz.doikki.videoplayer.pipextension.parentView
-import xyz.doikki.videoplayer.pipextension.simple.develop.SourceVideoSize
-import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoContainerView
 import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoOverlayView
 import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoView
 import xyz.doikki.videoplayer.player.BaseVideoView
 
-class UIHelper(
-    private val container: SimpleVideoContainerView,
-    private val videoView: SimpleVideoView,
-) : OrientationHelper.OnOrientationChangeListener {
+internal class UIHelper(private val videoView: SimpleVideoView) :
+    OrientationHelper.OnOrientationChangeListener {
 
     companion object {
         private const val DEFAULT_VIDEO_MARGIN = 100
@@ -41,7 +36,7 @@ class UIHelper(
         val value = if (widthPixels > heightPixels) ScreenOrientation.LANDSCAPE
         else ScreenOrientation.PORT
         if (currentOrientationType != value) {
-            refreshVideoSize(SourceVideoSize.ORI)
+            refreshVideoSize()
             currentOrientationType = value
         }
     }
@@ -59,7 +54,7 @@ class UIHelper(
 
     fun refreshRotation() {
         rotationHelper.refresh()
-        refreshVideoSize(SourceVideoSize.ROTATION)
+        refreshVideoSize()
     }
 
     fun releaseRotation() {
@@ -78,16 +73,16 @@ class UIHelper(
         return if (videoView.context.isLandscape) ScreenOrientation.LANDSCAPE else ScreenOrientation.PORT
     }
 
-    fun refreshVideoSize(type: SourceVideoSize) {
+    fun refreshVideoSize() {
         if (videoView.url.isBlank()) return
         if (!videoView.isMp3 && !videoView.inspectSize) return
 
         val newVideoSize =
-            if (container.isOverlayParent()) correctPipVideoSize() else correctViewVideoSize()
+            if (videoView.isOverlayParent()) correctPipVideoSize() else correctViewVideoSize()
 
-        container.parentView<SimpleVideoOverlayView>()
+        videoView.parentView<SimpleVideoOverlayView>()
             ?.updateViewLayout(newVideoSize)
-            ?: container.parentView<ViewGroup>()?.updateLayoutParams {
+            ?: videoView.parentView<ViewGroup>()?.updateLayoutParams {
                 width = newVideoSize.first()
                 height = newVideoSize.last()
                 if (this is FrameLayout.LayoutParams) {
@@ -99,7 +94,7 @@ class UIHelper(
 
         Log.e(
             "Print",
-            "RefreshVideoSize: \n来源:$type ${VideoManager.videoTag} "
+            "RefreshVideoSize:"
                     + "\n视频原尺寸:${videoView.videoSize.contentToString()}"
                     + "\n视频新尺寸:${newVideoSize.contentToString()}"
         )
@@ -115,7 +110,7 @@ class UIHelper(
         val heightPixels = metrics.heightPixels
 
         val landScapeWidth = widthPixels.coerceAtMost(heightPixels) - DEFAULT_VIDEO_MARGIN
-        if (videoView.isMp3) return intArrayOf(landScapeWidth, 150f.dp2px())
+        if (videoView.isMp3) return intArrayOf(landScapeWidth, 150f.dp)
 
         val landScapeHeight = (landScapeWidth.toFloat() / width * height).toInt()
         if (width >= height) return intArrayOf(landScapeWidth, landScapeHeight)
@@ -133,7 +128,7 @@ class UIHelper(
         val widthPixels = metrics.widthPixels
         val heightPixels = metrics.heightPixels
 
-        if (videoView.isMp3) return intArrayOf(widthPixels, 150f.dp2px())
+        if (videoView.isMp3) return intArrayOf(widthPixels, 150f.dp)
 
         if (widthPixels < heightPixels || !videoView.context.isLandscape) {
             if (width >= height)

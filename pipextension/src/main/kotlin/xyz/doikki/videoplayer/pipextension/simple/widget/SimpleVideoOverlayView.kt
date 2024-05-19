@@ -13,12 +13,12 @@ import android.view.ViewConfiguration
 import android.view.WindowManager
 import android.widget.FrameLayout
 import xyz.doikki.videoplayer.pipextension.R
-import xyz.doikki.videoplayer.pipextension.overlayType
 import xyz.doikki.videoplayer.pipextension.statusBarHeight
+import xyz.doikki.videoplayer.pipextension.updateOverlayType
 import xyz.doikki.videoplayer.util.PlayerUtils
 import kotlin.math.abs
 
-class SimpleVideoOverlayView @JvmOverloads constructor(
+internal class SimpleVideoOverlayView @JvmOverloads constructor(
     context: Context, downX: Int = 50, downY: Int = 50,
 ) : FrameLayout(context) {
 
@@ -30,7 +30,7 @@ class SimpleVideoOverlayView @JvmOverloads constructor(
 
     init {
         setBackgroundColor(Color.TRANSPARENT)
-        layoutParams.overlayType()
+        layoutParams.updateOverlayType()
         layoutParams.format = PixelFormat.TRANSLUCENT
         layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
         layoutParams.windowAnimations = R.style.ThemeSampleFloatWindowAnimation

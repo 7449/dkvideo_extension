@@ -1,9 +1,9 @@
 package xyz.doikki.videoplayer.pipextension.simple.widget.helper
 
-import xyz.doikki.videoplayer.pipextension.initializer.VideoInitializer
+import xyz.doikki.videoplayer.pipextension.VideoInitializer
 import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoOverlayView
 
-object OverlayHelper {
+internal object OverlayHelper {
 
     private var overlayView: SimpleVideoOverlayView? = null
 
@@ -16,6 +16,7 @@ object OverlayHelper {
 
     fun removeFromWindow() {
         overlayView?.removeFromWindow()
+        overlayView = null
     }
 
     fun isOverlay(): Boolean {
@@ -24,7 +25,6 @@ object OverlayHelper {
 
     fun release() {
         removeFromWindow()
-        overlayView = null
     }
 
 }

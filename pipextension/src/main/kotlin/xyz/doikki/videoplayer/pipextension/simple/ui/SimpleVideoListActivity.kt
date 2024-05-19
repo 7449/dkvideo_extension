@@ -3,26 +3,29 @@ package xyz.doikki.videoplayer.pipextension.simple.ui
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.widget.Toolbar
+import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import xyz.doikki.videoplayer.pipextension.R
-import xyz.doikki.videoplayer.pipextension.VideoManager
-import xyz.doikki.videoplayer.pipextension.simple.ui.SimpleVideoActivity
+import xyz.doikki.videoplayer.pipextension.databinding.VideoLayoutPlayListPlayBinding
 
-abstract class SimpleVideoListActivity :
-    SimpleVideoActivity(R.layout.video_layout_play_list_activity) {
+abstract class SimpleVideoListActivity : SimpleVideoActivity(R.layout.video_layout_play_list_play) {
 
-    private val recyclerView by lazy { findViewById<RecyclerView>(R.id.recyclerview) }
-    protected val toolbar: Toolbar by lazy { findViewById(R.id.toolbar) }
+    protected val viewBinding by lazy {
+        VideoLayoutPlayListPlayBinding.bind(
+            findViewById<ViewGroup>(android.R.id.content).getChildAt(0)
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        toolbar.title = "视频播放"
-        toolbar.setTitleTextColor(Color.WHITE)
-        recyclerView.adapter = createPlayListAdapter()
-        setSupportActionBar(toolbar)
+        viewBinding.toolbar.title = createToolbarTitle()
+        viewBinding.toolbar.setTitleTextColor(Color.WHITE)
+        createPlayListAdapter()?.let { viewBinding.recyclerview.adapter = it }
+        setSupportActionBar(viewBinding.toolbar)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        viewBinding.toolbar.isVisible = isShowToolbar()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -32,11 +35,19 @@ abstract class SimpleVideoListActivity :
         } else super.onOptionsItemSelected(item)
     }
 
-    protected abstract fun createPlayListAdapter(): RecyclerView.Adapter<*>
+    override fun onDestroy() {
+        viewBinding.recyclerview.adapter = null
+        super.onDestroy()
+    }
 
-    override fun onResume() {
-        super.onResume()
-        VideoManager.isPlayList(true)
+    protected abstract fun createPlayListAdapter(): RecyclerView.Adapter<*>?
+
+    protected open fun isShowToolbar(): Boolean {
+        return true
+    }
+
+    protected open fun createToolbarTitle(): String {
+        return "视频播放"
     }
 
 }

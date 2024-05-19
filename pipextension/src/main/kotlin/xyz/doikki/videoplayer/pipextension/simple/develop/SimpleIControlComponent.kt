@@ -4,7 +4,7 @@ import android.view.View
 import android.view.animation.Animation
 import xyz.doikki.videoplayer.controller.IControlComponent
 
-interface SimpleIControlComponent : IControlComponent {
+internal interface SimpleIControlComponent : IControlComponent {
 
     override fun getView(): View? {
         return this as? View

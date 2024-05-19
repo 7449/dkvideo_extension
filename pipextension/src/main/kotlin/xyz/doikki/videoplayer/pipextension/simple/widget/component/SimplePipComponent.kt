@@ -1,102 +1,75 @@
 package xyz.doikki.videoplayer.pipextension.simple.widget.component
 
 import android.content.Context
-import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.Animation
-import android.widget.FrameLayout
-import xyz.doikki.videoplayer.controller.ControlWrapper
+import androidx.core.view.isVisible
 import xyz.doikki.videoplayer.pipextension.VideoManager
-import xyz.doikki.videoplayer.pipextension.databinding.VideoLayoutPlayPipOperateBinding
-import xyz.doikki.videoplayer.pipextension.gone
-import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleIControlComponent
+import xyz.doikki.videoplayer.pipextension.databinding.VideoLayoutPlayOperatePipBinding
+import xyz.doikki.videoplayer.pipextension.isSingleVideoItem
+import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoComponent
 import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoState
-import xyz.doikki.videoplayer.pipextension.visible
 
-class SimplePipComponent @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
-) : FrameLayout(context, attrs, defStyleAttr), SimpleIControlComponent {
+internal class SimplePipComponent(context: Context) : SimpleVideoComponent(context) {
 
-    private var wrapper: ControlWrapper? = null
-    private val viewBinding = VideoLayoutPlayPipOperateBinding
+    private val viewBinding = VideoLayoutPlayOperatePipBinding
         .inflate(LayoutInflater.from(context), this, true)
 
     init {
-        viewBinding.start.setOnClickListener { wrapper?.togglePlay() }
+        viewBinding.next.isVisible = !isSingleVideoItem
+        viewBinding.prev.isVisible = !isSingleVideoItem
+
         viewBinding.close.setOnClickListener { VideoManager.closePipMode() }
-        viewBinding.restore.setOnClickListener { VideoManager.pipComeBackActivity() }
+        viewBinding.comeBack.setOnClickListener { VideoManager.comeBackActivity() }
         viewBinding.next.setOnClickListener { VideoManager.videoPlayNext() }
         viewBinding.prev.setOnClickListener { VideoManager.videoPlayPrev() }
         viewBinding.rotation.setOnClickListener { VideoManager.refreshRotation() }
         viewBinding.scale.setOnClickListener { VideoManager.refreshScreenScale() }
-    }
-
-    override fun attach(controlWrapper: ControlWrapper) {
-        wrapper = controlWrapper
+        viewBinding.start.setOnClickListener { controlWrapper?.togglePlay() }
+        viewBinding.replay.setOnClickListener { controlWrapper?.replay(true) }
+        viewBinding.retry.setOnClickListener { controlWrapper?.replay(false) }
     }
 
     override fun onVisibilityChanged(isVisible: Boolean, anim: Animation) {
-        if (wrapper?.isPlaying == false) return
-        if (isVisible) visibleViews()
-        else goneViews()
-        startAnimationViews(anim)
+        viewBinding.control.isVisible = isVisible
+        viewBinding.start.isVisible = isVisible
+        viewBinding.control.startAnimation(anim)
     }
 
     override fun onPlayStateChanged(state: SimpleVideoState) {
-        viewBinding.start.isSelected = wrapper?.isPlaying ?: false
-        if (state == SimpleVideoState.PAUSED || state == SimpleVideoState.IDLE) {
-            visibleViews()
-        } else {
-            goneViews()
+        viewBinding.start.isSelected = controlWrapper?.isPlaying ?: false
+
+        viewBinding.control.isVisible = state == SimpleVideoState.PAUSED
+                || state == SimpleVideoState.IDLE
+                || state == SimpleVideoState.PLAYBACK_COMPLETED
+
+        viewBinding.start.isVisible = state == SimpleVideoState.PAUSED
+                || state == SimpleVideoState.IDLE
+
+        viewBinding.loading.isVisible = state == SimpleVideoState.PREPARING
+                || state == SimpleVideoState.BUFFERING
+
+        viewBinding.replay.isVisible = state == SimpleVideoState.PLAYBACK_COMPLETED
+        viewBinding.retry.isVisible = state == SimpleVideoState.ERROR
+
+        if (state == SimpleVideoState.IDLE || state == SimpleVideoState.PLAYBACK_COMPLETED) {
+            viewBinding.progress.progress = 0
+            viewBinding.progress.secondaryProgress = 0
         }
-        if (state == SimpleVideoState.PREPARING || state == SimpleVideoState.BUFFERING) {
-            viewBinding.loading.visible()
-        } else {
-            viewBinding.loading.gone()
+        if (state == SimpleVideoState.PLAYING || state == SimpleVideoState.BUFFERING || state == SimpleVideoState.BUFFERED) {
+            controlWrapper?.startProgress()
         }
     }
 
-    private fun startAnimationViews(anim: Animation) {
-        viewBinding.start.startAnimation(anim)
-        viewBinding.close.startAnimation(anim)
-        viewBinding.restore.startAnimation(anim)
-        viewBinding.next.startAnimation(anim)
-        viewBinding.prev.startAnimation(anim)
-        viewBinding.rotation.startAnimation(anim)
-        viewBinding.scale.startAnimation(anim)
-    }
-
-    private fun visibleViews() {
-        playListView(true)
-        viewBinding.start.visible()
-        viewBinding.close.visible()
-        viewBinding.restore.visible()
-        viewBinding.rotation.visible()
-        viewBinding.scale.visible()
-    }
-
-    private fun goneViews() {
-        playListView(false)
-        viewBinding.start.gone()
-        viewBinding.close.gone()
-        viewBinding.restore.gone()
-        viewBinding.rotation.gone()
-        viewBinding.scale.gone()
-    }
-
-    private fun playListView(isVisible: Boolean) {
-        if (!VideoManager.isPlayList()) {
-            viewBinding.next.gone()
-            viewBinding.prev.gone()
-            return
+    override fun setProgress(duration: Int, position: Int) {
+        if (duration >= 0) {
+            bringToFront()
+            val value = position * 1.0 / duration * viewBinding.progress.max
+            viewBinding.progress.progress = value.toInt()
         }
-        if (isVisible) {
-            viewBinding.next.visible()
-            viewBinding.prev.visible()
-        } else {
-            viewBinding.next.gone()
-            viewBinding.prev.gone()
-        }
+        val percent = controlWrapper?.bufferedPercentage ?: 0
+        if (percent >= 95) viewBinding.progress.secondaryProgress = viewBinding.progress.max
+        else viewBinding.progress.secondaryProgress = percent * 10
     }
 
 }

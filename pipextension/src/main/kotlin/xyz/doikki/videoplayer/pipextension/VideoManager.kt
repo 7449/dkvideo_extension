@@ -1,109 +1,73 @@
 package xyz.doikki.videoplayer.pipextension
 
+import android.annotation.SuppressLint
 import android.view.ViewGroup
-import xyz.doikki.videoplayer.pipextension.initializer.VideoInitializer
-import xyz.doikki.videoplayer.pipextension.simple.develop.SourceVideoSize
-import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoContainerView
+import androidx.core.view.isVisible
+import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoView
 import xyz.doikki.videoplayer.pipextension.simple.widget.helper.OverlayHelper
 
-object VideoManager {
+internal object VideoManager {
 
     val isOverlay: Boolean get() = videoView.isOverlayParent() && OverlayHelper.isOverlay()
-    val isPlaying: Boolean get() = videoView.isPlaying()
-    val videoTag: String? get() = tag
+    val isPlaying: Boolean get() = videoView.isPlaying
 
-    private var tag: String? = null
-    private var videoListener: OnVideoListener? = null
-    private var isPlayList = true
-    private var isPip = true
+    internal val parentView get() = videoView.parentView<ViewGroup>()
+    private var videoListener: VideoListener? = null
 
-    private val videoView = SimpleVideoContainerView(VideoInitializer.appContext)
-        .buffered { it.refreshVideoSize(SourceVideoSize.BUFFERED) }
-        .videoSize { view, _ -> view.refreshVideoSize(SourceVideoSize.VIDEO_SIZE) }
+    @SuppressLint("StaticFieldLeak")
+    private val videoView = SimpleVideoView(VideoInitializer.appContext)
+        .buffered { it.refreshVideoSize() }
         .error { videoPlayError() }
-        .completed {
-            if (isPlayList()) {
-                videoPlayNext()
-            }
-        }
+        .completed { videoPlayNext() }
+        .videoSize { view, _ -> view.refreshVideoSize() }
 
-    fun setVideoListener(listener: OnVideoListener) {
-        videoListener = null
+    fun setVideoListener(listener: VideoListener) {
         videoListener = listener
     }
 
-    fun isPlayList(playlist: Boolean) = apply {
-        this.isPlayList = playlist
-    }
-
-    fun isPip(pip: Boolean) = apply {
-        this.isPip = pip
-    }
-
-    fun startVideo(url: String, header: Map<String, String> = emptyMap()) {
-        videoView.startVideo(url, header)
-    }
-
-    fun startVideo(
-        container: ViewGroup?,
-        tag: String,
-        title: String,
-        url: String,
-        header: Map<String, String> = emptyMap(),
-    ) {
-        attachParent(container, tag, title)
-        startVideo(url, header)
-    }
-
-    fun attachParent(container: ViewGroup?, tag: String, title: String) {
-        this.tag = tag
-        videoView.release()
-        if (container != null) {
-            attachView(container, title)
-        } else {
-            attachWindow()
+    fun startVideo(item: SimpleVideoItem) {
+        videoView.showVideoPreloadAnim()
+        item.url {
+            videoView.hideVideoPreloadAnim()
+            videoView.start(it, item.header)
         }
     }
 
-    fun attachWindow() {
-        OverlayHelper.get().addToWindow(videoView.getPipVideo())
-        videoView.refreshVideoSize(SourceVideoSize.ATTACH_WINDOW)
+    fun attachParent(container: ViewGroup? = null, title: String = "", release: Boolean = true) {
+        if (release) {
+            videoView.release()
+        }
+        if (container != null && container.activityOrNull != null) attachPage(container, title)
+        else attachPip()
     }
 
-    fun attachView(container: ViewGroup, title: String) {
-        container.visible()
-        container.addView(
-            videoView.getViewVideo(container.scanActivity(), title),
-            videoMatchParams
-        )
-        videoView.refreshVideoSize(SourceVideoSize.ATTACH_VIEW)
+    private fun attachPip() {
+        OverlayHelper.get().addToWindow(videoView.getPipVideo())
+        videoView.refreshVideoSize()
+    }
+
+    private fun attachPage(container: ViewGroup, title: String) {
+        container.isVisible = true
+        container.addView(videoView.getViewVideo(container.activity, title), videoMatchParams)
+        videoView.refreshVideoSize()
         OverlayHelper.removeFromWindow()
     }
 
-    fun showAnimView() {
-        videoView.showAnimView()
-    }
-
-    fun showVideoView() {
-        videoView.showVideoView()
-    }
-
-    fun shutDown() {
+    private fun shutDown() {
         videoView.release()
         videoView.removeViewFormParent()
         OverlayHelper.release()
         videoListener = null
-        tag = null
     }
 
     fun onPause() {
         if (isOverlay) return
-        videoView.onPause()
+        videoView.pause()
     }
 
     fun onResume() {
         if (isOverlay) return
-        videoView.onResume()
+        videoView.resume()
     }
 
     fun onDestroy() {
@@ -116,28 +80,28 @@ object VideoManager {
         return videoView.onBackPressed()
     }
 
-    internal fun closePipMode() {
+    fun closePipMode() {
         shutDown()
     }
 
-    internal fun pipComeBackActivity() {
-        videoListener?.onPipComeBackActivity(videoView.parentView())
+    fun comeBackActivity() {
+        videoListener?.onEntryActivity()
     }
 
-    internal fun entryPipMode() {
-        videoListener?.onSwitchPipMode(videoView.parentView())
+    fun entryPipMode() {
+        videoListener?.onEntryPip()
     }
 
-    internal fun videoPlayNext() {
-        videoListener?.onVideoPlayNext(videoView.parentView())
+    fun videoPlayNext() {
+        videoListener?.onVideoPlayNext()
     }
 
-    internal fun videoPlayPrev() {
-        videoListener?.onVideoPlayPrev(videoView.parentView())
+    fun videoPlayPrev() {
+        videoListener?.onVideoPlayPrev()
     }
 
-    internal fun videoPlayError() {
-        videoListener?.onVideoPlayError(videoView.parentView())
+    private fun videoPlayError() {
+        videoListener?.onVideoPlayError()
     }
 
     internal fun refreshRotation() {
@@ -146,14 +110,6 @@ object VideoManager {
 
     internal fun refreshScreenScale() {
         videoView.refreshScreenScale()
-    }
-
-    internal fun isPlayList(): Boolean {
-        return isPlayList
-    }
-
-    internal fun isPip(): Boolean {
-        return isPip
     }
 
 }
