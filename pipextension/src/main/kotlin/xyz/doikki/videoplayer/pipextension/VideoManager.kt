@@ -11,7 +11,7 @@ internal object VideoManager {
     val isOverlay: Boolean get() = videoView.isOverlayParent() && OverlayHelper.isOverlay()
     val isPlaying: Boolean get() = videoView.isPlaying
 
-    internal val parentView get() = videoView.parentView<ViewGroup>()
+    val parentView get() = videoView.parentView<ViewGroup>()
     private var videoListener: VideoListener? = null
 
     @SuppressLint("StaticFieldLeak")
@@ -27,7 +27,7 @@ internal object VideoManager {
 
     fun startVideo(item: SimpleVideoItem) {
         videoView.showVideoPreloadAnim()
-        item.url {
+        item.urlCallback.onRequestVideoUrl {
             videoView.hideVideoPreloadAnim()
             videoView.start(it, item.header)
         }
@@ -104,11 +104,11 @@ internal object VideoManager {
         videoListener?.onVideoPlayError()
     }
 
-    internal fun refreshRotation() {
+    fun refreshRotation() {
         videoView.refreshRotation()
     }
 
-    internal fun refreshScreenScale() {
+    fun refreshScreenScale() {
         videoView.refreshScreenScale()
     }
 

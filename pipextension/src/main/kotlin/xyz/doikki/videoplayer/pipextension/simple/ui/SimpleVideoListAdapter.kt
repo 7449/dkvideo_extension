@@ -6,12 +6,13 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.RoundedCornersTransformation
 import xyz.doikki.videoplayer.pipextension.SimpleVideoItem
 import xyz.doikki.videoplayer.pipextension.databinding.VideoLayoutPlayListItemBinding
 
 internal class SimpleVideoListAdapter(
     private val item: List<SimpleVideoItem>,
-    private val onClick: (SimpleVideoItem) -> Unit
+    private val onClick: (SimpleVideoItem) -> Unit,
 ) : RecyclerView.Adapter<SimpleVideoListAdapter.ViewHolder>() {
     class ViewHolder(val binding: VideoLayoutPlayListItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -31,6 +32,8 @@ internal class SimpleVideoListAdapter(
         holder.binding.cover.load(model.cover) {
             model.placeholder?.let { placeholder(it) }
             model.placeholder?.let { error(it) }
+            crossfade(true)
+            transformations(RoundedCornersTransformation(10f))
         }
     }
 

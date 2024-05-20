@@ -10,10 +10,10 @@ class SampleActivity : SimpleVideoActivity(R.layout.sample_activity) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         findViewById<View>(R.id.single).setOnClickListener {
-            SimpleVideoPlayActivity.start(this, SampleUrls.item)
+            SimpleVideoPlayActivity.single(SampleUrls.item)
         }
         findViewById<View>(R.id.multi).setOnClickListener {
-            SimpleVideoPlayActivity.start(this, SampleUrls.items)
+            SimpleVideoPlayActivity.list(SampleUrls.items)
         }
     }
 

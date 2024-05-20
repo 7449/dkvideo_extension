@@ -4,38 +4,77 @@
 package xyz.doikki.videoplayer.pipextension
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import xyz.doikki.videoplayer.pipextension.simple.ui.SimpleVideoActivity
 import xyz.doikki.videoplayer.pipextension.simple.ui.SimpleVideoListActivity
 import xyz.doikki.videoplayer.pipextension.simple.ui.SimpleVideoListAdapter
 
+interface VideoUrlCallback {
+    fun onRequestVideoUrl(action: (String) -> Unit)
+}
+
 data class SimpleVideoItem(
     val title: String,
-    val url: ((String) -> Unit) -> Unit,
+    val urlCallback: VideoUrlCallback,
     val header: Map<String, String> = emptyMap(),
     val cover: Any? = null,
     val placeholder: Int? = null,
     val key: String = title,
     var select: Boolean = false,
-)
+) {
+    companion object {
+        fun create(
+            title: String = "",
+            url: String? = null,
+            urlCallback: VideoUrlCallback? = null,
+            header: Map<String, String> = emptyMap(),
+            cover: Any? = null,
+            placeholder: Int? = null,
+            key: String = title,
+            select: Boolean = true,
+        ): SimpleVideoItem {
+            return SimpleVideoItem(
+                title = title,
+                urlCallback = urlCallback ?: object : VideoUrlCallback {
+                    override fun onRequestVideoUrl(action: (String) -> Unit) {
+                        action.invoke(url.orEmpty())
+                    }
+                },
+                header = header,
+                cover = cover,
+                placeholder = placeholder,
+                key = key,
+                select = select
+            )
+        }
+    }
+}
+
+private object VideoItemManager {
+    private val selectVideoItemIndex get() = videoItem.indexOfFirst { it.select }
+    private val videoItemSize get() = videoItem.size
+    val prevVideoItem get() = videoItem.subList(0, selectVideoItemIndex).lastOrNull()
+    val nextVideoItem get() = videoItem.drop(selectVideoItemIndex + 1).firstOrNull()
+    val isSingle get() = videoItemSize <= 1
+    val selectVideoItem get() = videoItem.find { it.select }
+    fun refreshState(newItem: SimpleVideoItem) {
+        videoItem.forEach { it.select = it.key == newItem.key }
+        if (!isSingle) {
+            simpleVideoAdapter.notifyDataSetChanged()
+        }
+    }
+}
 
 private val videoItem = arrayListOf<SimpleVideoItem>()
-private val simpleVideoAdapter = SimpleVideoListAdapter(videoItem) { playVideoItem(it) }
+private val simpleVideoAdapter = SimpleVideoListAdapter(videoItem) { it.playVideoItem() }
 private val simpleVideoListener = SimpleVideoPlayListener()
 
-private val videoItemSize get() = videoItem.size
-private val selectVideoItemIndex get() = videoItem.indexOfFirst { it.select }
-private val prevVideoItem get() = videoItem.subList(0, selectVideoItemIndex).lastOrNull()
-private val nextVideoItem get() = videoItem.drop(selectVideoItemIndex + 1).firstOrNull()
-
-internal val isSingleVideoItem get() = videoItemSize <= 1
-internal val selectVideoItem get() = if (videoItemSize > 1) videoItem.find { it.select } else videoItem.firstOrNull()
+internal val isSingleVideoItem get() = VideoItemManager.isSingle
+internal val selectVideoItem get() = VideoItemManager.selectVideoItem
 
 private class SimpleVideoPlayListener : VideoListener {
     override fun onEntryPip() {
@@ -46,20 +85,17 @@ private class SimpleVideoPlayListener : VideoListener {
     }
 
     override fun onEntryActivity() {
-        if (videoItem.isEmpty()) return
-        SimpleVideoPlayActivity.start(VideoInitializer.appContext, videoItem)
+        SimpleVideoPlayActivity.list(videoItem)
     }
 
     override fun onVideoPlayPrev() {
         if (isSingleVideoItem) return
-        val item = prevVideoItem ?: return
-        playVideoItem(item)
+        VideoItemManager.prevVideoItem.playVideoItem()
     }
 
     override fun onVideoPlayNext() {
         if (isSingleVideoItem) return
-        val item = nextVideoItem ?: return
-        playVideoItem(item)
+        VideoItemManager.nextVideoItem.playVideoItem()
     }
 
     override fun onVideoPlayError() {
@@ -67,11 +103,9 @@ private class SimpleVideoPlayListener : VideoListener {
     }
 }
 
-private fun playVideoItem(item: SimpleVideoItem, parent: ViewGroup? = null) {
-    videoItem.forEach { it.select = it.key == item.key }
-    if (!isSingleVideoItem) {
-        simpleVideoAdapter.notifyDataSetChanged()
-    }
+private fun SimpleVideoItem?.playVideoItem(parent: ViewGroup? = null) {
+    val item = this ?: return
+    VideoItemManager.refreshState(item)
     val viewGroup = VideoManager.parentView ?: parent ?: return
     VideoManager.attachParent(viewGroup, item.title)
     VideoManager.startVideo(item)
@@ -80,7 +114,12 @@ private fun playVideoItem(item: SimpleVideoItem, parent: ViewGroup? = null) {
 class SimpleVideoPlayActivity : SimpleVideoListActivity() {
 
     companion object {
-        fun start(context: Context, item: List<SimpleVideoItem>) {
+        fun single(item: SimpleVideoItem) {
+            list(listOf(item.copy(select = true)))
+        }
+
+        fun list(item: List<SimpleVideoItem>) {
+            val context = VideoInitializer.appContext
             val newItem = item.map { it.copy() }
             videoItem.clear()
             videoItem.addAll(newItem)
@@ -97,10 +136,9 @@ class SimpleVideoPlayActivity : SimpleVideoListActivity() {
         viewBinding.toolbar.navigationIcon?.setTint(Color.WHITE)
         window.statusBarColor = color
         VideoManager.setVideoListener(simpleVideoListener)
-        val videoItem = selectVideoItem ?: videoItem.firstOrNull() ?: return
-        Log.e("Print", VideoManager.isOverlay.toString())
+        val videoItem = selectVideoItem ?: return
         if (!VideoManager.isPlaying) {
-            playVideoItem(videoItem, viewBinding.video)
+            videoItem.playVideoItem(viewBinding.video)
         } else if (VideoManager.isOverlay) {
             VideoManager.attachParent(viewBinding.video, videoItem.title, false)
         }

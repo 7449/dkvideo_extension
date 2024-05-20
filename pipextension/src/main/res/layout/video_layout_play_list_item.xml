@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/cover"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         tools:background="@drawable/video_icon_play_close" />
 
     <TextView

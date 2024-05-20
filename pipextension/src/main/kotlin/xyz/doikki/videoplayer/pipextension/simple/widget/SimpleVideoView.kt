@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
 import xyz.doikki.videoplayer.pipextension.parentView
+import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoPreload
 import xyz.doikki.videoplayer.pipextension.simple.widget.helper.ControllerHelper
 import xyz.doikki.videoplayer.pipextension.simple.widget.helper.ListenerHelper
 import xyz.doikki.videoplayer.pipextension.simple.widget.helper.UIHelper
@@ -51,11 +52,17 @@ internal class SimpleVideoView @JvmOverloads constructor(
     }
 
     fun showVideoPreloadAnim() {
-        controllerHelper.showVideoPreloadAnim()
+        val videoController = mVideoController
+        if (videoController is SimpleVideoPreload) {
+            videoController.showVideoPreloadAnim()
+        }
     }
 
     fun hideVideoPreloadAnim() {
-        controllerHelper.hideVideoPreloadAnim()
+        val videoController = mVideoController
+        if (videoController is SimpleVideoPreload) {
+            videoController.hideVideoPreloadAnim()
+        }
     }
 
     fun start(url: String, header: Map<String, String>) {
@@ -69,7 +76,6 @@ internal class SimpleVideoView @JvmOverloads constructor(
         setVideoController(null)
         uiHelper.releaseRotation()
         uiHelper.releaseScreenScale()
-        controllerHelper.release()
         super.release()
     }
 
