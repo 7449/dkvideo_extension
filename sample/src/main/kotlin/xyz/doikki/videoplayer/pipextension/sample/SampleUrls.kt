@@ -19,7 +19,6 @@ object SampleUrls {
             SimpleVideoItem.create(
                 title = "Video1",
                 url = W3C,
-                cover = com.squareup.leakcanary.R.mipmap.leak_canary_icon,
                 key = W3C,
             )
         )
@@ -27,7 +26,6 @@ object SampleUrls {
             SimpleVideoItem.create(
                 title = "Video2",
                 url = W3C_H5,
-                cover = com.squareup.leakcanary.R.mipmap.leak_canary_icon,
                 key = W3C_H5,
                 select = true
             )
@@ -36,7 +34,6 @@ object SampleUrls {
             SimpleVideoItem.create(
                 title = "Video3",
                 url = TRAILER,
-                cover = com.squareup.leakcanary.R.mipmap.leak_canary_icon,
                 key = TRAILER,
             )
         )

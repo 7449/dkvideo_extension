@@ -8,6 +8,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import xyz.doikki.videoplayer.pipextension.simple.ui.SimpleVideoActivity
 import xyz.doikki.videoplayer.pipextension.simple.ui.SimpleVideoListActivity
@@ -61,6 +64,12 @@ private object VideoItemManager {
     val nextVideoItem get() = videoItem.drop(selectVideoItemIndex + 1).firstOrNull()
     val isSingle get() = videoItemSize <= 1
     val selectVideoItem get() = videoItem.find { it.select }
+    fun refreshItem(item: List<SimpleVideoItem>) {
+        val newItem = item.map { it.copy() }
+        videoItem.clear()
+        videoItem.addAll(newItem)
+    }
+
     fun refreshState(newItem: SimpleVideoItem) {
         videoItem.forEach { it.select = it.key == newItem.key }
         if (!isSingle) {
@@ -77,6 +86,7 @@ internal val isSingleVideoItem get() = VideoItemManager.isSingle
 internal val selectVideoItem get() = VideoItemManager.selectVideoItem
 
 private class SimpleVideoPlayListener : VideoListener {
+
     override fun onEntryPip() {
         val scanActivity = VideoManager.parentView?.activityOrNull
         if (scanActivity is SimpleVideoActivity) {
@@ -111,6 +121,52 @@ private fun SimpleVideoItem?.playVideoItem(parent: ViewGroup? = null) {
     VideoManager.startVideo(item)
 }
 
+fun singlePipVideo(item: SimpleVideoItem) {
+    listPipVideo(listOf(item.copy(select = true)))
+}
+
+fun listPipVideo(item: List<SimpleVideoItem>) {
+    val context = VideoInitializer.appContext
+    VideoItemManager.refreshItem(item)
+    context.startActivity(Intent(context, SimpleVideoPermissionActivity::class.java).apply {
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    })
+}
+
+internal class SimpleVideoPermissionActivity : FragmentActivity() {
+
+    private val typeOverlayLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == AppCompatActivity.RESULT_OK && isOverlayPermissions()) {
+                switchPipMode()
+            }
+        }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        VideoManager.setVideoListener(simpleVideoListener)
+        switchPipMode()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        typeOverlayLauncher.unregister()
+    }
+
+    private fun switchPipMode() {
+        if (!isOverlayPermissions()) {
+            typeOverlayLauncher.overlayLaunch()
+        } else {
+            val item = selectVideoItem ?: return
+            VideoItemManager.refreshState(item)
+            VideoManager.attachParent(title = item.title)
+            VideoManager.startVideo(item)
+        }
+        finish()
+    }
+
+}
+
 class SimpleVideoPlayActivity : SimpleVideoListActivity() {
 
     companion object {
@@ -120,9 +176,7 @@ class SimpleVideoPlayActivity : SimpleVideoListActivity() {
 
         fun list(item: List<SimpleVideoItem>) {
             val context = VideoInitializer.appContext
-            val newItem = item.map { it.copy() }
-            videoItem.clear()
-            videoItem.addAll(newItem)
+            VideoItemManager.refreshItem(item)
             context.startActivity(Intent(context, SimpleVideoPlayActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             })

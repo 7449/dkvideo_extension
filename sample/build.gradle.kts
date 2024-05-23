@@ -23,6 +23,6 @@ android {
 dependencies {
     implementation(libs.appcompat)
     implementation(libs.recyclerview)
-    debugImplementation(libs.leak.canary)
+//    debugImplementation(libs.leak.canary)
     implementation(project(":pipextension"))
 }

@@ -11,9 +11,21 @@
         android:text="单个视频" />
 
     <Button
-        android:id="@+id/multi"
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="多个视频" />
+
+    <Button
+        android:id="@+id/single_pip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="单个视频PIP" />
+
+    <Button
+        android:id="@+id/list_pip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="多个视频PIP" />
 
 </LinearLayout>
