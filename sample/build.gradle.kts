@@ -13,16 +13,16 @@ android {
     }
     buildFeatures.viewBinding = true
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.toVersion(libs.versions.jvmTarget.get())
+        targetCompatibility = JavaVersion.toVersion(libs.versions.jvmTarget.get())
     }
     kotlinOptions {
         jvmTarget = libs.versions.jvmTarget.get()
     }
 }
 dependencies {
-    implementation(libs.appcompat)
-    implementation(libs.recyclerview)
-//    debugImplementation(libs.leak.canary)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.recyclerview)
+//    debugImplementation(libs.github.leak.canary)
     implementation(project(":pipextension"))
 }
