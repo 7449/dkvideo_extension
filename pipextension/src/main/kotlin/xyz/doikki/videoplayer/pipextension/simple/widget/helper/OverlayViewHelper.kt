@@ -1,15 +1,15 @@
 package xyz.doikki.videoplayer.pipextension.simple.widget.helper
 
-import xyz.doikki.videoplayer.pipextension.VideoInitializer
-import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoOverlayView
+import android.content.Context
+import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoOverlayView
 
-internal object OverlayHelper {
+internal object OverlayViewHelper {
 
     private var overlayView: SimpleVideoOverlayView? = null
 
-    fun get(): SimpleVideoOverlayView {
+    fun get(context: Context): SimpleVideoOverlayView {
         if (overlayView == null) {
-            overlayView = SimpleVideoOverlayView(VideoInitializer.appContext)
+            overlayView = SimpleVideoOverlayView(context)
         }
         return requireNotNull(overlayView)
     }

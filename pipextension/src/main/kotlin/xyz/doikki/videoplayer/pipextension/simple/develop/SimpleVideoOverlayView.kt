@@ -1,4 +1,4 @@
-package xyz.doikki.videoplayer.pipextension.simple.widget
+package xyz.doikki.videoplayer.pipextension.simple.develop
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,8 +13,6 @@ import android.view.ViewConfiguration
 import android.view.WindowManager
 import android.widget.FrameLayout
 import xyz.doikki.videoplayer.pipextension.R
-import xyz.doikki.videoplayer.pipextension.statusBarHeight
-import xyz.doikki.videoplayer.pipextension.updateOverlayType
 import xyz.doikki.videoplayer.util.PlayerUtils
 import kotlin.math.abs
 
@@ -30,7 +28,7 @@ internal class SimpleVideoOverlayView @JvmOverloads constructor(
 
     init {
         setBackgroundColor(Color.TRANSPARENT)
-        layoutParams.updateOverlayType()
+        layoutParams.setOverlayType()
         layoutParams.format = PixelFormat.TRANSLUCENT
         layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
         layoutParams.windowAnimations = R.style.ThemeSampleFloatWindowAnimation

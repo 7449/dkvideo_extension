@@ -2,12 +2,12 @@ package xyz.doikki.videoplayer.pipextension.sample
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import xyz.doikki.videoplayer.pipextension.SimpleVideoPlayActivity
 import xyz.doikki.videoplayer.pipextension.listPipVideo
-import xyz.doikki.videoplayer.pipextension.simple.ui.SimpleVideoActivity
 import xyz.doikki.videoplayer.pipextension.singlePipVideo
 
-class SampleActivity : SimpleVideoActivity(R.layout.sample_activity) {
+class SampleActivity : AppCompatActivity(R.layout.sample_activity) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

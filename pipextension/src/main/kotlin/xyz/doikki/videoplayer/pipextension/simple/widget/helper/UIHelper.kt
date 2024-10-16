@@ -6,10 +6,13 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.view.updateLayoutParams
 import xyz.doikki.videoplayer.controller.OrientationHelper
-import xyz.doikki.videoplayer.pipextension.dp
-import xyz.doikki.videoplayer.pipextension.isLandscape
-import xyz.doikki.videoplayer.pipextension.parentView
-import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoOverlayView
+import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoOverlayView
+import xyz.doikki.videoplayer.pipextension.simple.develop.dp
+import xyz.doikki.videoplayer.pipextension.simple.develop.inspectSize
+import xyz.doikki.videoplayer.pipextension.simple.develop.isLandscape
+import xyz.doikki.videoplayer.pipextension.simple.develop.isMp3Url
+import xyz.doikki.videoplayer.pipextension.simple.develop.isOverlayParent
+import xyz.doikki.videoplayer.pipextension.simple.develop.parentView
 import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoView
 import xyz.doikki.videoplayer.player.BaseVideoView
 
@@ -75,10 +78,12 @@ internal class UIHelper(private val videoView: SimpleVideoView) :
 
     fun refreshVideoSize() {
         if (videoView.url.isBlank()) return
-        if (!videoView.isMp3 && !videoView.inspectSize) return
+        if (!videoView.isMp3Url() && !videoView.inspectSize()) return
 
-        val newVideoSize =
-            if (videoView.isOverlayParent()) correctPipVideoSize() else correctViewVideoSize()
+        val newVideoSize = if (videoView.isOverlayParent())
+            correctPipVideoSize()
+        else
+            correctViewVideoSize()
 
         videoView.parentView<SimpleVideoOverlayView>()
             ?.updateViewLayout(newVideoSize)
@@ -110,7 +115,7 @@ internal class UIHelper(private val videoView: SimpleVideoView) :
         val heightPixels = metrics.heightPixels
 
         val landScapeWidth = widthPixels.coerceAtMost(heightPixels) - DEFAULT_VIDEO_MARGIN
-        if (videoView.isMp3) return intArrayOf(landScapeWidth, 150f.dp)
+        if (videoView.isMp3Url()) return intArrayOf(landScapeWidth, 150f.dp)
 
         val landScapeHeight = (landScapeWidth.toFloat() / width * height).toInt()
         if (width >= height) return intArrayOf(landScapeWidth, landScapeHeight)
@@ -124,12 +129,11 @@ internal class UIHelper(private val videoView: SimpleVideoView) :
         val width = defaultSize.first()
         val height = defaultSize.last()
 
-        val metrics = videoView.context.resources.displayMetrics
+        val metrics = videoView.resources.displayMetrics
         val widthPixels = metrics.widthPixels
         val heightPixels = metrics.heightPixels
 
-        if (videoView.isMp3) return intArrayOf(widthPixels, 150f.dp)
-
+        if (videoView.isMp3Url()) return intArrayOf(widthPixels, 150f.dp)
         if (widthPixels < heightPixels || !videoView.context.isLandscape) {
             if (width >= height)
                 return intArrayOf(widthPixels, (widthPixels.toFloat() / width * height).toInt())
@@ -144,36 +148,33 @@ internal class UIHelper(private val videoView: SimpleVideoView) :
     private class RotationHelper(private val videoView: SimpleVideoView) {
 
         private enum class Rotation(val rotation: Int) {
-            R_90(90), R_180(180), R_270(270), R_360(360),
+            R_0(0), R_90(90), R_180(180), R_270(270),
         }
 
         private val rotationArray = Rotation.entries
-        private var rotation = Rotation.R_360
         private var rotationIndex = 0
 
         fun rotationVideoSize(): IntArray {
             val videoSize = videoView.videoSize
-            return when (rotation) {
-                Rotation.R_90, Rotation.R_270 -> intArrayOf(videoSize.last(), videoSize.first())
+            val currentRotation = rotationArray[rotationIndex]
+            return when (currentRotation) {
+                Rotation.R_90, Rotation.R_270 -> videoSize.reversed().toIntArray()
                 else -> videoSize
             }
         }
 
         fun release() {
-            rotation = Rotation.R_360
             rotationIndex = 0
-            videoView.rotation = 0f
+            applyRotation()
         }
 
         fun refresh() {
-            onChangedRotation(rotationArray[rotationIndex].apply {
-                rotationIndex = (rotationIndex + 1) % rotationArray.size
-            })
+            rotationIndex = (rotationIndex + 1) % rotationArray.size
+            applyRotation()
         }
 
-        private fun onChangedRotation(rotation: Rotation) {
-            videoView.rotation = rotation.rotation.toFloat()
-            this.rotation = rotation
+        private fun applyRotation() {
+            videoView.rotation = rotationArray[rotationIndex].rotation.toFloat()
         }
 
     }
@@ -190,24 +191,21 @@ internal class UIHelper(private val videoView: SimpleVideoView) :
         }
 
         private val scaleTypes = ScreenScale.entries
-        private var scaleType = ScreenScale.SCREEN_SCALE_DEFAULT
-        private var scaleIndex = 1
+        private var scaleIndex = 0
 
         fun release() {
-            scaleType = ScreenScale.SCREEN_SCALE_DEFAULT
-            scaleIndex = 1
-            onChangedScreenScaleType(scaleType)
+            scaleIndex = 0
+            applyScreenScaleType()
         }
 
         fun refresh() {
-            onChangedScreenScaleType(scaleTypes[scaleIndex].apply {
-                scaleIndex = (scaleIndex + 1) % scaleTypes.size
-            })
+            scaleIndex = (scaleIndex + 1) % scaleTypes.size
+            applyScreenScaleType()
         }
 
-        private fun onChangedScreenScaleType(scaleType: ScreenScale) {
+        private fun applyScreenScaleType() {
+            val scaleType = scaleTypes[scaleIndex]
             videoView.setScreenScaleType(scaleType.scale)
-            this.scaleType = scaleType
         }
 
     }

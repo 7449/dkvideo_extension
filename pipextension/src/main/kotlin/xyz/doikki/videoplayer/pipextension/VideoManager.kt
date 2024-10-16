@@ -3,16 +3,22 @@ package xyz.doikki.videoplayer.pipextension
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import xyz.doikki.videoplayer.pipextension.simple.develop.activity
+import xyz.doikki.videoplayer.pipextension.simple.develop.activityOrNull
+import xyz.doikki.videoplayer.pipextension.simple.develop.isOverlayParent
+import xyz.doikki.videoplayer.pipextension.simple.develop.parentView
+import xyz.doikki.videoplayer.pipextension.simple.develop.removeViewFormParent
+import xyz.doikki.videoplayer.pipextension.simple.develop.videoMatchParams
 import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoView
-import xyz.doikki.videoplayer.pipextension.simple.widget.helper.OverlayHelper
+import xyz.doikki.videoplayer.pipextension.simple.widget.helper.OverlayViewHelper
 
 internal object VideoManager {
 
-    val isOverlay: Boolean get() = videoView.isOverlayParent() && OverlayHelper.isOverlay()
+    val isOverlay: Boolean get() = videoView.isOverlayParent() && OverlayViewHelper.isOverlay()
     val isPlaying: Boolean get() = videoView.isPlaying
 
     val parentView get() = videoView.parentView<ViewGroup>()
-    private var videoListener: VideoListener? = null
+    private var videoListener: OnVideoListener? = null
 
     @SuppressLint("StaticFieldLeak")
     private val videoView = SimpleVideoView(VideoInitializer.appContext)
@@ -21,7 +27,7 @@ internal object VideoManager {
         .completed { videoPlayNext() }
         .videoSize { view, _ -> view.refreshVideoSize() }
 
-    fun setVideoListener(listener: VideoListener) {
+    fun setVideoListener(listener: OnVideoListener) {
         videoListener = listener
     }
 
@@ -42,21 +48,29 @@ internal object VideoManager {
     }
 
     private fun attachPip() {
-        OverlayHelper.get().addToWindow(videoView.getPipVideo())
+        OverlayViewHelper.get(VideoInitializer.appContext).addToWindow(
+            videoView.getPipVideo(VideoInitializer.listener)
+        )
         videoView.refreshVideoSize()
     }
 
     private fun attachPage(container: ViewGroup, title: String) {
         container.isVisible = true
-        container.addView(videoView.getViewVideo(container.activity, title), videoMatchParams)
+        container.addView(
+            videoView.getViewVideo(
+                container.activity,
+                title,
+                VideoInitializer.listener
+            ), videoMatchParams
+        )
         videoView.refreshVideoSize()
-        OverlayHelper.removeFromWindow()
+        OverlayViewHelper.removeFromWindow()
     }
 
     private fun shutDown() {
         videoView.release()
         videoView.removeViewFormParent()
-        OverlayHelper.release()
+        OverlayViewHelper.release()
         videoListener = null
     }
 
@@ -80,16 +94,16 @@ internal object VideoManager {
         return videoView.onBackPressed()
     }
 
-    fun closePipMode() {
+    fun closePip() {
         shutDown()
+    }
+
+    fun toPip() {
+        videoListener?.onEntryPip()
     }
 
     fun comeBackActivity() {
         videoListener?.onEntryActivity()
-    }
-
-    fun entryPipMode() {
-        videoListener?.onEntryPip()
     }
 
     fun videoPlayNext() {

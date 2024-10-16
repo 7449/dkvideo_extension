@@ -4,7 +4,7 @@ import xyz.doikki.videoplayer.pipextension.simple.widget.SimpleVideoView
 import xyz.doikki.videoplayer.player.BaseVideoView
 import xyz.doikki.videoplayer.player.BaseVideoView.SimpleOnStateChangeListener
 
-internal class ListenerHelper(videoView: SimpleVideoView) {
+internal class ListenerHelper(private val videoView: SimpleVideoView) {
 
     private var completed: ((view: SimpleVideoView) -> Unit)? = null
     private var buffered: ((view: SimpleVideoView) -> Unit)? = null

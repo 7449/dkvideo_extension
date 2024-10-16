@@ -17,5 +17,5 @@ android {
     }
 }
 dependencies {
-    implementation(libs.bundles.video)
+    implementation(libs.bundles.pip)
 }

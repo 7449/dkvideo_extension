@@ -10,11 +10,10 @@ import xyz.doikki.videocontroller.component.GestureView
 import xyz.doikki.videocontroller.component.PrepareView
 import xyz.doikki.videocontroller.component.TitleView
 import xyz.doikki.videocontroller.component.VodControlView
-import xyz.doikki.videoplayer.pipextension.VideoManager
 import xyz.doikki.videoplayer.pipextension.databinding.VideoLayoutPlayOperateViewBinding
-import xyz.doikki.videoplayer.pipextension.isSingleVideoItem
 import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoComponent
 import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoController
+import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoListener
 import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoState
 
 internal class SimpleViewController(context: Context) : SimpleVideoController(context) {
@@ -27,7 +26,7 @@ internal class SimpleViewController(context: Context) : SimpleVideoController(co
     private val gestureView = GestureView(context)
     private val widgetView = SimpleWidgetView(context)
 
-    fun addControlComponents(title: String) {
+    fun addControlComponents(title: String, listener: SimpleVideoListener) {
         prepareView.setClickStart()
         titleView.setTitle(title)
         addControlComponent(
@@ -39,7 +38,7 @@ internal class SimpleViewController(context: Context) : SimpleVideoController(co
             gestureView,
             preloadComponent
         )
-        addControlComponent(widgetView)
+        addControlComponent(widgetView.setListener(listener))
         setEnableInNormal(true)
     }
 
@@ -50,20 +49,29 @@ internal class SimpleViewController(context: Context) : SimpleVideoController(co
         return super.onBackPressed()
     }
 
-    internal class SimpleWidgetView(context: Context) : SimpleVideoComponent(context) {
+    private class SimpleWidgetView(context: Context) : SimpleVideoComponent(context) {
 
         private val viewBinding = VideoLayoutPlayOperateViewBinding
             .inflate(LayoutInflater.from(context), this, true)
 
-        init {
-            viewBinding.next.isVisible = !isSingleVideoItem
-            viewBinding.prev.isVisible = !isSingleVideoItem
+        private var listener: SimpleVideoListener? = null
 
-            viewBinding.rotation.setOnClickListener { VideoManager.refreshRotation() }
-            viewBinding.scale.setOnClickListener { VideoManager.refreshScreenScale() }
-            viewBinding.pip.setOnClickListener { VideoManager.entryPipMode() }
-            viewBinding.next.setOnClickListener { VideoManager.videoPlayNext() }
-            viewBinding.prev.setOnClickListener { VideoManager.videoPlayPrev() }
+        init {
+            viewBinding.rotation.setOnClickListener { listener?.onClickRotation() }
+            viewBinding.scale.setOnClickListener { listener?.onClickScale() }
+            viewBinding.pip.setOnClickListener { listener?.onToPip() }
+            viewBinding.next.setOnClickListener { listener?.onClickNext() }
+            viewBinding.prev.setOnClickListener { listener?.onClickPrev() }
+        }
+
+        fun setListener(listener: SimpleVideoListener) = apply {
+            this.listener = listener
+            refreshUI()
+        }
+
+        private fun refreshUI() {
+            viewBinding.next.isVisible = listener?.isSingleVideo == false
+            viewBinding.prev.isVisible = listener?.isSingleVideo == false
         }
 
         override fun onVisibilityChanged(isVisible: Boolean, anim: Animation) {
@@ -73,6 +81,11 @@ internal class SimpleViewController(context: Context) : SimpleVideoController(co
 
         override fun onPlayStateChanged(state: SimpleVideoState) {
             viewBinding.root.isVisible = false
+        }
+
+        override fun onDetachedFromWindow() {
+            listener = null
+            super.onDetachedFromWindow()
         }
 
     }

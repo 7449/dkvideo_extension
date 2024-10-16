@@ -3,8 +3,8 @@ package xyz.doikki.videoplayer.pipextension.simple.widget
 import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
-import xyz.doikki.videoplayer.pipextension.parentView
-import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoPreload
+import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoController.SimpleVideoPreload
+import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoListener
 import xyz.doikki.videoplayer.pipextension.simple.widget.helper.ControllerHelper
 import xyz.doikki.videoplayer.pipextension.simple.widget.helper.ListenerHelper
 import xyz.doikki.videoplayer.pipextension.simple.widget.helper.UIHelper
@@ -12,7 +12,7 @@ import xyz.doikki.videoplayer.player.VideoView
 
 internal class SimpleVideoView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
-) : VideoView(context, attrs, defStyleAttr) {
+) : VideoView(context, attrs, defStyleAttr), SimpleVideoPreload {
 
     interface OnVideoSizeChangedListener {
         fun onVideoSizeChanged(size: IntArray)
@@ -22,6 +22,8 @@ internal class SimpleVideoView @JvmOverloads constructor(
     private val listenerHelper = ListenerHelper(this)
     private val controllerHelper = ControllerHelper(this)
     private val uiHelper = UIHelper(this)
+
+    val url get() = mUrl.orEmpty()
 
     fun completed(action: (view: SimpleVideoView) -> Unit) = apply {
         listenerHelper.completed(action)
@@ -39,30 +41,20 @@ internal class SimpleVideoView @JvmOverloads constructor(
         listenerHelper.videoSize(action)
     }
 
-    fun getPipVideo() = apply {
+    fun setOnVideoSizeChangedListener(listener: OnVideoSizeChangedListener) {
+        this.videoSizeChangedListener = listener
+    }
+
+    fun getPipVideo(listener: SimpleVideoListener) = apply {
         uiHelper.releaseRotation()
         uiHelper.releaseScreenScale()
-        controllerHelper.pipController()
+        controllerHelper.pipController(listener)
     }
 
-    fun getViewVideo(activity: Activity, title: String) = apply {
+    fun getViewVideo(activity: Activity, title: String, listener: SimpleVideoListener) = apply {
         uiHelper.releaseRotation()
         uiHelper.releaseScreenScale()
-        controllerHelper.viewController(activity, title)
-    }
-
-    fun showVideoPreloadAnim() {
-        val videoController = mVideoController
-        if (videoController is SimpleVideoPreload) {
-            videoController.showVideoPreloadAnim()
-        }
-    }
-
-    fun hideVideoPreloadAnim() {
-        val videoController = mVideoController
-        if (videoController is SimpleVideoPreload) {
-            videoController.hideVideoPreloadAnim()
-        }
+        controllerHelper.viewController(activity, title, listener)
     }
 
     fun start(url: String, header: Map<String, String>) {
@@ -91,6 +83,10 @@ internal class SimpleVideoView @JvmOverloads constructor(
         uiHelper.refreshVideoSize()
     }
 
+    private fun revertSize() {
+        mVideoSize = intArrayOf(0, 0)
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         uiHelper.onAttachedToWindow()
@@ -101,27 +97,23 @@ internal class SimpleVideoView @JvmOverloads constructor(
         uiHelper.onDetachedFromWindow()
     }
 
-    fun isOverlayParent(): Boolean {
-        return parentView<SimpleVideoOverlayView>() != null
-    }
-
-    val url get() = mUrl.orEmpty()
-
-    val isMp3 get() = url.lowercase().contains("mp3")
-
-    val inspectSize get() = videoSize.first() != 0 && videoSize.last() != 0
-
-    fun setOnVideoSizeChangedListener(listener: OnVideoSizeChangedListener) {
-        this.videoSizeChangedListener = listener
-    }
-
     override fun onVideoSizeChanged(videoWidth: Int, videoHeight: Int) {
         super.onVideoSizeChanged(videoWidth, videoHeight)
         videoSizeChangedListener?.onVideoSizeChanged(videoSize)
     }
 
-    private fun revertSize() {
-        mVideoSize = intArrayOf(0, 0)
+    override fun showVideoPreloadAnim() {
+        val videoController = mVideoController
+        if (videoController is SimpleVideoPreload) {
+            videoController.showVideoPreloadAnim()
+        }
+    }
+
+    override fun hideVideoPreloadAnim() {
+        val videoController = mVideoController
+        if (videoController is SimpleVideoPreload) {
+            videoController.hideVideoPreloadAnim()
+        }
     }
 
 }
