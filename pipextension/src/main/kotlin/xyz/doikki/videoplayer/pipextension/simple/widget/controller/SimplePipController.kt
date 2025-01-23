@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.animation.Animation
 import androidx.core.view.isVisible
 import xyz.doikki.videoplayer.pipextension.databinding.VideoLayoutPlayOperatePipBinding
+import xyz.doikki.videoplayer.pipextension.simple.config.SimpleLogger
 import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoComponent
 import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoController
 import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoListener
@@ -47,12 +48,14 @@ internal class SimplePipController(context: Context) : SimpleVideoController(con
         }
 
         override fun onVisibilityChanged(isVisible: Boolean, anim: Animation) {
+            SimpleLogger.i("SimplePip onVisibilityChanged: $isVisible")
             viewBinding.control.isVisible = isVisible
             viewBinding.start.isVisible = isVisible
             viewBinding.control.startAnimation(anim)
         }
 
         override fun onPlayStateChanged(state: SimpleVideoState) {
+            SimpleLogger.i("SimplePip onPlayStateChanged: $state")
             viewBinding.start.isSelected = controlWrapper?.isPlaying == true
 
             viewBinding.control.isVisible = state == SimpleVideoState.PAUSED

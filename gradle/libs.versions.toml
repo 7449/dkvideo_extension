@@ -1,14 +1,14 @@
 [versions]
 
-compileSdk = "34"
-targetSdk = "34"
+compileSdk = "35"
+targetSdk = "35"
 versionCode = "1"
 versionName = "1.0.0"
 minSdk = "21"
 jvmTarget = "17"
 
-android = "8.7.2"
-kotlin = "2.0.21"
+android = "8.7.3"
+kotlin = "2.1.0"
 
 [plugins]
 #https://maven.google.com/web/index.html#com.android.application:com.android.application.gradle.plugin
@@ -22,9 +22,9 @@ android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 #https://maven.google.com/web/index.html#androidx.appcompat:appcompat
 androidx-appcompat = "androidx.appcompat:appcompat:1.7.0"
 #https://maven.google.com/web/index.html#androidx.media3:media3-exoplayer
-androidx-media3-exo = "androidx.media3:media3-exoplayer:1.4.1"
-androidx-media3-exo-dls = "androidx.media3:media3-exoplayer-hls:1.4.1"
-androidx-media3-exo-dash = "androidx.media3:media3-exoplayer-dash:1.4.1"
+androidx-media3-exo = "androidx.media3:media3-exoplayer:1.5.1"
+androidx-media3-exo-dls = "androidx.media3:media3-exoplayer-hls:1.5.1"
+androidx-media3-exo-dash = "androidx.media3:media3-exoplayer-dash:1.5.1"
 
 #https://github.com/Doikki/DKVideoPlayer
 dkplayer = "xyz.doikki.android.dkplayer:dkplayer-java:3.3.7"

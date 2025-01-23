@@ -3,19 +3,17 @@ package xyz.doikki.videoplayer.pipextension.simple.ui
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.ViewGroup
 import android.widget.ListAdapter
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import xyz.doikki.videoplayer.pipextension.R
 import xyz.doikki.videoplayer.pipextension.VideoManager
 import xyz.doikki.videoplayer.pipextension.databinding.VideoLayoutPlayUiBinding
 import xyz.doikki.videoplayer.pipextension.simple.develop.isOverlayPermissions
 import xyz.doikki.videoplayer.pipextension.simple.develop.launchOverlay
 
-abstract class SimpleVideoUiActivity : AppCompatActivity(R.layout.video_layout_play_ui) {
+abstract class SimpleVideoUiActivity : AppCompatActivity() {
 
     private val typeOverlayLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -26,9 +24,9 @@ abstract class SimpleVideoUiActivity : AppCompatActivity(R.layout.video_layout_p
     }
 
     protected val viewBinding by lazy {
-        VideoLayoutPlayUiBinding.bind(
-            findViewById<ViewGroup>(android.R.id.content).getChildAt(0)
-        )
+        VideoLayoutPlayUiBinding.inflate(layoutInflater).apply {
+            setContentView(root)
+        }
     }
 
     private val videoManager = VideoManager

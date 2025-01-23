@@ -1,11 +1,11 @@
 package xyz.doikki.videoplayer.pipextension.simple.widget.helper
 
-import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.view.updateLayoutParams
 import xyz.doikki.videoplayer.controller.OrientationHelper
+import xyz.doikki.videoplayer.pipextension.simple.config.SimpleLogger
 import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoOverlayView
 import xyz.doikki.videoplayer.pipextension.simple.develop.dp
 import xyz.doikki.videoplayer.pipextension.simple.develop.inspectSize
@@ -77,13 +77,12 @@ internal class UIHelper(private val videoView: SimpleVideoView) :
     }
 
     fun refreshVideoSize() {
+        SimpleLogger.i("RefreshVideoSize")
         if (videoView.url.isBlank()) return
         if (!videoView.isMp3Url() && !videoView.inspectSize()) return
 
-        val newVideoSize = if (videoView.isOverlayParent())
-            correctPipVideoSize()
-        else
-            correctViewVideoSize()
+        val newVideoSize = if (videoView.isOverlayParent()) correctPipVideoSize()
+        else correctViewVideoSize()
 
         videoView.parentView<SimpleVideoOverlayView>()
             ?.updateViewLayout(newVideoSize)
@@ -97,8 +96,7 @@ internal class UIHelper(private val videoView: SimpleVideoView) :
 
         screenScaleHelper.release()
 
-        Log.e(
-            "Print",
+        SimpleLogger.i(
             "RefreshVideoSize:"
                     + "\n视频原尺寸:${videoView.videoSize.contentToString()}"
                     + "\n视频新尺寸:${newVideoSize.contentToString()}"

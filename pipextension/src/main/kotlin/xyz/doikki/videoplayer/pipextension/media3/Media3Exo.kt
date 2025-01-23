@@ -5,7 +5,6 @@ import android.content.res.AssetFileDescriptor
 import android.net.Uri
 import android.view.Surface
 import android.view.SurfaceHolder
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.PlaybackParameters
@@ -19,12 +18,15 @@ import androidx.media3.exoplayer.dash.DashMediaSource
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
-import androidx.media3.exoplayer.util.EventLogger
+import xyz.doikki.videoplayer.pipextension.simple.config.SimpleLogger
+import xyz.doikki.videoplayer.pipextension.simple.config.SimpleMediaConfig
+import xyz.doikki.videoplayer.pipextension.simple.config.SimpleVideoType
 import xyz.doikki.videoplayer.player.AbstractPlayer
-import xyz.doikki.videoplayer.player.VideoViewManager
 
 @UnstableApi
-internal class Media3Exo(context: Context) : AbstractPlayer(), Player.Listener {
+internal class Media3Exo(
+    context: Context
+) : AbstractPlayer(), Player.Listener {
 
     private val application = context.applicationContext
 
@@ -34,11 +36,9 @@ internal class Media3Exo(context: Context) : AbstractPlayer(), Player.Listener {
     private var isPreparing = false
 
     override fun initPlayer() {
+        reset()
         internalPlayer = ExoPlayer.Builder(application).build().apply {
             addListener(this@Media3Exo)
-            if (VideoViewManager.getConfig().mIsEnableLog) {
-                addAnalyticsListener(EventLogger("ExoPlayer"))
-            }
         }
         setOptions()
     }
@@ -181,12 +181,6 @@ internal class Media3Exo(context: Context) : AbstractPlayer(), Player.Listener {
     override fun onVideoSizeChanged(videoSize: VideoSize) {
         val eventListener = mPlayerEventListener ?: return
         eventListener.onVideoSizeChanged(videoSize.width, videoSize.height)
-        if (videoSize.unappliedRotationDegrees > 0) {
-            eventListener.onInfo(
-                MEDIA_INFO_VIDEO_ROTATION_CHANGED,
-                videoSize.unappliedRotationDegrees
-            )
-        }
     }
 
     private fun mediaSource(
@@ -194,32 +188,29 @@ internal class Media3Exo(context: Context) : AbstractPlayer(), Player.Listener {
         header: Map<String, String>? = null,
     ): MediaSource {
         val contentUri = Uri.parse(url)
-        val contentType = contentType(url)
+        val currentHeader = header.orEmpty().toMutableMap()
+
+        val videoType = SimpleVideoType.value(
+            currentHeader.remove(SimpleMediaConfig.PlayType.config).orEmpty()
+        )
 
         val dataSourceFactory = DefaultHttpDataSource.Factory()
-            .setDefaultRequestProperties(header.orEmpty())
+            .setDefaultRequestProperties(currentHeader)
             .setAllowCrossProtocolRedirects(true)
 
+        SimpleLogger.i("${SimpleMediaConfig.PlayType.config} = $videoType")
+        SimpleLogger.i("header = $currentHeader")
+
         val factory = DefaultDataSource.Factory(application, dataSourceFactory)
-        return when (contentType) {
-            C.CONTENT_TYPE_DASH -> DashMediaSource.Factory(factory)
+        return when (videoType) {
+            SimpleVideoType.Dash -> DashMediaSource.Factory(factory)
                 .createMediaSource(MediaItem.fromUri(contentUri))
 
-            C.CONTENT_TYPE_HLS -> HlsMediaSource.Factory(factory)
+            SimpleVideoType.Hls -> HlsMediaSource.Factory(factory)
                 .createMediaSource(MediaItem.fromUri(contentUri))
 
-            else -> ProgressiveMediaSource.Factory(factory)
+            SimpleVideoType.Other -> ProgressiveMediaSource.Factory(factory)
                 .createMediaSource(MediaItem.fromUri(contentUri))
-        }
-    }
-
-    private fun contentType(url: String): Int {
-        return if (url.lowercase().contains("mpd")) {
-            C.CONTENT_TYPE_DASH
-        } else if (url.lowercase().contains("m3u8")) {
-            C.CONTENT_TYPE_HLS
-        } else {
-            C.CONTENT_TYPE_OTHER
         }
     }
 

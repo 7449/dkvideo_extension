@@ -11,6 +11,7 @@ import xyz.doikki.videocontroller.component.PrepareView
 import xyz.doikki.videocontroller.component.TitleView
 import xyz.doikki.videocontroller.component.VodControlView
 import xyz.doikki.videoplayer.pipextension.databinding.VideoLayoutPlayOperateViewBinding
+import xyz.doikki.videoplayer.pipextension.simple.config.SimpleLogger
 import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoComponent
 import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoController
 import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoListener
@@ -27,7 +28,6 @@ internal class SimpleViewController(context: Context) : SimpleVideoController(co
     private val widgetView = SimpleWidgetView(context)
 
     fun addControlComponents(title: String, listener: SimpleVideoListener) {
-        prepareView.setClickStart()
         titleView.setTitle(title)
         addControlComponent(
             completeView,
@@ -75,12 +75,13 @@ internal class SimpleViewController(context: Context) : SimpleVideoController(co
         }
 
         override fun onVisibilityChanged(isVisible: Boolean, anim: Animation) {
+            SimpleLogger.i("SimpleView onVisibilityChanged: $isVisible")
             viewBinding.root.isVisible = isVisible
             startAnimation(anim)
         }
 
         override fun onPlayStateChanged(state: SimpleVideoState) {
-            viewBinding.root.isVisible = false
+            SimpleLogger.i("SimpleView onPlayStateChanged: $state")
         }
 
         override fun onDetachedFromWindow() {

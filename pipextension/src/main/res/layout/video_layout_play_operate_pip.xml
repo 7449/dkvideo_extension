@@ -19,6 +19,7 @@
             android:layout_height="35dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
+            android:importantForAccessibility="no"
             android:padding="3dp"
             android:src="@drawable/video_icon_play_prev" />
 
@@ -28,6 +29,7 @@
             android:layout_height="35dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
+            android:importantForAccessibility="no"
             android:padding="3dp"
             android:src="@drawable/video_icon_play_next" />
 
@@ -36,6 +38,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_alignParentStart="true"
+            android:importantForAccessibility="no"
             android:padding="5dp"
             android:src="@drawable/video_icon_play_full" />
 
@@ -44,6 +47,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_alignParentEnd="true"
+            android:importantForAccessibility="no"
             android:padding="5dp"
             android:src="@drawable/video_icon_play_close" />
 
@@ -53,6 +57,7 @@
             android:layout_height="35dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
+            android:importantForAccessibility="no"
             android:padding="7dp"
             android:src="@drawable/video_icon_play_rotation" />
 
@@ -62,6 +67,7 @@
             android:layout_height="35dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:importantForAccessibility="no"
             android:padding="7dp"
             android:src="@drawable/video_icon_play_scale" />
 
@@ -82,6 +88,7 @@
         android:layout_height="35dp"
         android:layout_gravity="center"
         android:background="@drawable/dkplayer_shape_play_bg"
+        android:importantForAccessibility="no"
         android:padding="10dp"
         android:src="@drawable/dkplayer_ic_action_replay"
         android:visibility="gone"
@@ -93,6 +100,7 @@
         android:layout_height="35dp"
         android:layout_gravity="center"
         android:background="@drawable/video_shape_play_start_bg"
+        android:importantForAccessibility="no"
         android:padding="10dp"
         android:src="@drawable/video_selector_play_start"
         android:visibility="gone"

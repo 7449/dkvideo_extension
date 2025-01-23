@@ -22,6 +22,11 @@ internal abstract class SimpleVideoComponent(
     override fun onPlayStateChanged(state: SimpleVideoState) {
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        _controlWrapper = null
+    }
+
     private interface SimpleIControlComponent : IControlComponent {
 
         override fun getView(): View? {

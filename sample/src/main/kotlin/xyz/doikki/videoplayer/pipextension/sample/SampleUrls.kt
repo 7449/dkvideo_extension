@@ -1,6 +1,8 @@
 package xyz.doikki.videoplayer.pipextension.sample
 
 import xyz.doikki.videoplayer.pipextension.SimpleVideoItem
+import xyz.doikki.videoplayer.pipextension.simple.config.SimpleMediaConfig
+import xyz.doikki.videoplayer.pipextension.simple.config.SimpleVideoType
 
 object SampleUrls {
 
@@ -12,6 +14,9 @@ object SampleUrls {
         title = "Video",
         url = W3C_H5,
         key = W3C_H5,
+        header = mapOf(
+            SimpleMediaConfig.PlayType.config to SimpleVideoType.Other.type,
+        ),
     )
 
     val items = arrayListOf<SimpleVideoItem>().apply {
