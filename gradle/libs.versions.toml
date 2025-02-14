@@ -7,8 +7,8 @@ versionName = "1.0.0"
 minSdk = "21"
 jvmTarget = "17"
 
-android = "8.7.3"
-kotlin = "2.1.0"
+android = "8.8.1"
+kotlin = "2.1.10"
 
 [plugins]
 #https://maven.google.com/web/index.html#com.android.application:com.android.application.gradle.plugin
