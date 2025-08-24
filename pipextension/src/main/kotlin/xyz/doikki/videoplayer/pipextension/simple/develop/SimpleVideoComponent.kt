@@ -1,12 +1,8 @@
 package xyz.doikki.videoplayer.pipextension.simple.develop
 
 import android.content.Context
-import android.view.View
-import android.view.animation.Animation
 import android.widget.FrameLayout
 import xyz.doikki.videoplayer.controller.ControlWrapper
-import xyz.doikki.videoplayer.controller.IControlComponent
-import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoComponent.SimpleIControlComponent
 
 internal abstract class SimpleVideoComponent(
     context: Context
@@ -25,34 +21,6 @@ internal abstract class SimpleVideoComponent(
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         _controlWrapper = null
-    }
-
-    private interface SimpleIControlComponent : IControlComponent {
-
-        override fun getView(): View? {
-            return this as? View
-        }
-
-        override fun onVisibilityChanged(isVisible: Boolean, anim: Animation) {
-        }
-
-        override fun setProgress(duration: Int, position: Int) {
-        }
-
-        override fun onPlayStateChanged(playState: Int) {
-            val videoState = SimpleVideoState.entries.find { it.state == playState }
-            requireNotNull(videoState) { "Unknown Video State $playState" }
-            onPlayStateChanged(videoState)
-        }
-
-        override fun onPlayerStateChanged(playerState: Int) {
-        }
-
-        override fun onLockStateChanged(isLocked: Boolean) {
-        }
-
-        fun onPlayStateChanged(state: SimpleVideoState)
-
     }
 
 }

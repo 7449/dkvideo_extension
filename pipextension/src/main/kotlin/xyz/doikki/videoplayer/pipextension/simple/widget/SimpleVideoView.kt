@@ -3,8 +3,8 @@ package xyz.doikki.videoplayer.pipextension.simple.widget
 import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
-import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoController.SimpleVideoPreload
 import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoListener
+import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoPreload
 import xyz.doikki.videoplayer.pipextension.simple.widget.helper.ControllerHelper
 import xyz.doikki.videoplayer.pipextension.simple.widget.helper.ListenerHelper
 import xyz.doikki.videoplayer.pipextension.simple.widget.helper.UIHelper

@@ -6,7 +6,6 @@ import androidx.core.view.isVisible
 import xyz.doikki.videoplayer.controller.ControlWrapper
 import xyz.doikki.videoplayer.controller.GestureVideoController
 import xyz.doikki.videoplayer.pipextension.databinding.VideoLayoutPlayPreloadBinding
-import xyz.doikki.videoplayer.pipextension.simple.develop.SimpleVideoController.SimpleVideoPreload
 
 internal abstract class SimpleVideoController(
     context: Context
@@ -23,11 +22,6 @@ internal abstract class SimpleVideoController(
 
     override fun hideVideoPreloadAnim() {
         preloadComponent.isVisible = false
-    }
-
-    interface SimpleVideoPreload {
-        fun showVideoPreloadAnim()
-        fun hideVideoPreloadAnim()
     }
 
     class SimpleVideoPreloadComponent(context: Context) : SimpleVideoComponent(context) {

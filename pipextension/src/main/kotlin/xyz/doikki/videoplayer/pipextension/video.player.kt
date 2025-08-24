@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.ListAdapter
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.graphics.toColorInt
 import androidx.fragment.app.FragmentActivity
 import xyz.doikki.videoplayer.pipextension.simple.develop.activityOrNull
 import xyz.doikki.videoplayer.pipextension.simple.develop.isOverlayPermissions
@@ -85,7 +86,7 @@ class SimpleVideoPlayActivity : SimpleVideoUiActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val color = Color.parseColor("#009688")
+        val color = "#009688".toColorInt()
         viewBinding.toolbar.setBackgroundColor(color)
         viewBinding.toolbar.navigationIcon?.setTint(Color.WHITE)
         window.statusBarColor = color
